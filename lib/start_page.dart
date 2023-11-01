@@ -18,11 +18,25 @@ class _start_pageState extends State<start_page> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
+            child: Image.asset("images/kmu_rm_b2.png",
+                width: 350, height: 250, fit: BoxFit.fill),
+          ),
+          SizedBox(
+            height: 50,
+            child: Text(
+              "계명여지도",
+              style: TextStyle(
+                  fontSize: 40,
+                  color: Colors.blue,
+                  fontFamily: 'notosanscjkkr'),
+            ),
+          ),
+          Center(
             child: ElevatedButton(
               onPressed: () {
                 Get.offAll(kmu_map());
               },
-              child: Text("data"),
+              child: Text("시작"),
             ),
           )
         ],

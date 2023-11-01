@@ -8,9 +8,8 @@ class drawer_page extends StatefulWidget {
   @override
   State<drawer_page> createState() => _drawer_pageState();
 }
-
 class _drawer_pageState extends State<drawer_page> {
-  int change_test = 1;//!!!!!!!!!!!!!!!!!
+  int change_test = 1;
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,4 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +8,7 @@ import 'package:custom_info_window/custom_info_window.dart';
 import 'package:get/get.dart';
 import 'package:project_2/Building_map/building_map.dart';
 import 'package:project_2/Building_map/drawer_page.dart';
-import 'package:project_2/login_page.dart';
+import 'package:project_2/search_page.dart';
 import 'Building_data.dart';
 
 class kmu_map extends StatefulWidget {
@@ -18,13 +19,12 @@ class kmu_map extends StatefulWidget {
 }
 
 class _kmu_mapState extends State<kmu_map> {
-  static building_data data_box = new building_data();
-
+  static building_data data_box = building_data();
   CustomInfoWindowController _customInfoWindowController =
-  CustomInfoWindowController();
+      CustomInfoWindowController();
 
-  final List<Marker> _markers = data_box.input_marker();
-  final List<LatLng> _LatLang = data_box.input_latlang();
+  final List<Marker> _markers = data_box.get_marker();
+  final List<LatLng> _LatLang = data_box.get_latlang();
 
   static final LatLng start_map = LatLng(35.855764, 128.487199);
   static final CameraPosition initialPosition = CameraPosition(
@@ -74,10 +74,11 @@ class _kmu_mapState extends State<kmu_map> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(data_box.input_buildingName()[i]),
+                    Text(data_box.get_buildingName()[i]),
                     ElevatedButton(
                       onPressed: () {
-                        Get.to(swiper_test());
+                        Get.to(swiper_test2(),
+                            arguments: data_box.get_buildingName()[i]);
                         _customInfoWindowController.hideInfoWindow!();
                       },
                       child: Text("건물내부"),
@@ -98,45 +99,102 @@ class _kmu_mapState extends State<kmu_map> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-        drawer: drawer_page(),
-        body: Stack(
-          children: [
-            Container(
-              child: google_option(), //구글 지도설정
+    return StreamBuilder<Position>( // 데이터를 받아옴
+      stream: Geolocator.getPositionStream(), // 현재 GPS위치를 받아옴
+      builder: (context, snapshot) {
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Scaffold(
+            drawer: drawer_page(),
+            body: Stack(
+              children: [
+                Container(
+                  child: google_option(), //구글 지도설정
+                ),
+                CustomInfoWindow(
+                  //infoWindow 크기랑 설정
+                  controller: _customInfoWindowController,
+                  height: 100,
+                  width: 200,
+                  offset: 35,
+                ),
+                Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          await showSearch(
+                            context: context,
+                            delegate: Search_page(),
+                          );
+                        },
+                        child: Icon(Icons.search),
+                      ),
+                      Builder(builder: (context) {
+                        return ElevatedButton(
+                            onPressed: () {
+                              Scaffold.of(context).openDrawer();
+                            },
+                            child: Icon(Icons.list_outlined));
+                      }),
+                      ElevatedButton(
+                        onPressed: () {
+                          print(snapshot.data);/////////////////////GPS좌표 출력
+                          setState(
+                                () {
+                              if (test.isEmpty) {
+                                _markers.add(
+                                  Marker(
+                                    markerId: MarkerId("test"),
+                                    icon: BitmapDescriptor.defaultMarker,
+                                    position: LatLng(35.857577, 128.487243),
+                                  ),
+                                );
+                                test.add(
+                                  Polyline(
+                                    polylineId: PolylineId("value"),
+                                    points: [
+                                      LatLng(35.857577, 128.487243),
+                                      LatLng(35.859300, 128.486937),
+                                      LatLng(35.859820, 128.487069),
+                                      LatLng(35.859679, 128.487733),
+                                      LatLng(35.859171, 128.487625),
+                                      LatLng(35.859300, 128.486937),
+                                    ],
+                                    width: 2,
+                                  ),
+                                );
+                                test_circles_make();
+                              } else {
+                                test.clear();
+                                circles_test.clear();
+                                _markers.removeWhere(
+                                        (marker) => marker.markerId.value == 'test');
+                              }
+                            },
+                          );
+                        },
+                        child: Text("data"),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
-            CustomInfoWindow(
-              //infoWindow 크기랑 설정
-              controller: _customInfoWindowController,
-              height: 100,
-              width: 200,
-              offset: 35,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  border: Border.all(color: Colors.black, width: 2),
-                  color: Colors.white),
-              margin: EdgeInsets.only(top: 40, left: 20, right: 20),
-              width: 400,
-              height: 60,
-              padding: EdgeInsets.only(bottom: 10, right: 20),
-              child: search_map(),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      }
     );
   }
 
   final List<Polyline> test =
-  <Polyline>[]; ////////////////////////////////////test
+      <Polyline>[]; ////////////////////////////////////test
   final List<Circle> circles_test =
-  <Circle>[]; ////////////////////////////////////test
+      <Circle>[]; ////////////////////////////////////test
 
   test_circles_make() {
     for (int i = 0; i < _LatLang.length; i++) {
@@ -175,69 +233,6 @@ class _kmu_mapState extends State<kmu_map> {
       },
       zoomControlsEnabled: true,
       minMaxZoomPreference: MinMaxZoomPreference(16.7499995, 30),
-    );
-  }
-
-  Widget search_map() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Builder(builder: (context) {
-          return Expanded(
-            flex: 10,
-            child: IconButton(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              icon: Icon(
-                Icons.list_outlined,
-                size: 40,
-              ),
-            ),
-          );
-        }),
-        Expanded(
-          flex: 45,
-          child: TextField(),
-        ),
-        Expanded(
-          flex: 5,
-          child: IconButton(
-            onPressed: () {
-              setState(
-                    () {
-                  _markers.add(
-                    Marker(
-                      markerId: MarkerId("test"),
-                      icon: BitmapDescriptor.defaultMarker,
-                      position: LatLng(35.857577, 128.487243),
-                    ),
-                  );
-                  test.add(
-                    Polyline(
-                      polylineId: PolylineId("value"),
-                      points: [
-                        LatLng(35.857577, 128.487243),
-                        LatLng(35.859300, 128.486937),
-                        LatLng(35.859820, 128.487069),
-                        LatLng(35.859679, 128.487733),
-                        LatLng(35.859171, 128.487625),
-                        LatLng(35.859300, 128.486937),
-                      ],
-                      width: 2,
-                    ),
-                  );
-                  test_circles_make();
-                },
-              );
-            },
-            icon: Icon(
-              Icons.search,
-              size: 30,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
