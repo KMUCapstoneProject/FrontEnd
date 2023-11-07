@@ -23,7 +23,7 @@ class _drawer_pageState extends State<drawer_page> {
               Icons.find_in_page_rounded,
               color: Colors.grey[850],
             ),
-            title: Text("행사 신청서"),
+            title: change_test == 1 ? Text("행사 신청서") : Text("data"),
             onTap: () {},
           ),
           ListTile(
@@ -37,6 +37,20 @@ class _drawer_pageState extends State<drawer_page> {
         ],
       ),
     );
+  }
+
+  Widget drawer_page_sort(String box)
+  {
+    switch(box)
+    {
+      case "vip" : return Drawer(
+
+        );
+      default :
+        return Drawer(
+
+        );
+    }
   }
 
   Widget tesst(int a) {

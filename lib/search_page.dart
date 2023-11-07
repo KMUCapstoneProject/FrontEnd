@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:project_2/Building_data.dart';
+import 'package:project_2/Building_map/Building_data.dart';
+import 'package:project_2/road/road_data.dart';
 
 class Search_page extends SearchDelegate {
   building_data data = building_data();
@@ -23,6 +24,7 @@ class Search_page extends SearchDelegate {
             } else {
               query = "";
             }
+            road_data().reset_road();
           },
           icon: Icon(Icons.clear),
         )
@@ -35,10 +37,9 @@ class Search_page extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-
-    List<String> suggestions = data.get_buildingName().where((searchResult){
+    List<String> suggestions = data.get_buildingName().where((searchResult) {
       return searchResult.contains(query);
-    }).toList();//검색창에 글자를 넣을때 마다 리스트에 그 글자와 관련된 내용이 있으면 리스트에 추가
+    }).toList(); //검색창에 글자를 넣을때 마다 리스트에 그 글자와 관련된 내용이 있으면 리스트에 추가
 
     return ListView.builder(
       itemCount: suggestions.length,
@@ -49,6 +50,9 @@ class Search_page extends SearchDelegate {
           onTap: () {
             query = suggestion;
             showResults(context);
+            print(query);
+            road_data().reset_road();
+            road_data().input_road(query);
           },
         );
       },

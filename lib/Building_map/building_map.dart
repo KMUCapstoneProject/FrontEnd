@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
-import 'package:project_2/Building_data.dart';
+import 'package:project_2/Building_map/Building_data.dart';
+import 'package:photo_view/photo_view.dart';
 
 class swiper_test2 extends StatefulWidget {
   const swiper_test2({super.key});
@@ -34,26 +35,27 @@ class _swiper_test2State extends State<swiper_test2> {
                 height: 300.0,
                 onPageChanged: (index, reason) {
                   setState(
-                        () {
+                    () {
                       _currentIndex = index;
                     },
                   );
                 },
               ),
               items: test_st.map(
-                    (i) {
+                (i) {
                   return Builder(
                     builder: (BuildContext context) {
                       return Container(
                         width: MediaQuery.of(context).size.width,
                         margin: EdgeInsets.symmetric(horizontal: 10.0),
                         decoration: BoxDecoration(
-                          color: _currentIndex == test_st.indexOf(i) ? Colors.blue : Colors.amber,
+                          color: _currentIndex == test_st.indexOf(i)
+                              ? Colors.blue
+                              : Colors.amber,
                         ),
                         child: Center(
-                          child: Text(
-                            'Image $i',
-                            style: TextStyle(fontSize: 16.0),
+                          child: PhotoView(
+                            imageProvider: AssetImage("images/kmu_1.png"),
                           ),
                         ),
                       );
@@ -70,7 +72,7 @@ class _swiper_test2State extends State<swiper_test2> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (int i = test_st.length; i >=1; i--)
+                      for (int i = test_st.length; i >= 1; i--)
                         Expanded(
                           flex: 1,
                           child: ElevatedButton(
@@ -78,13 +80,17 @@ class _swiper_test2State extends State<swiper_test2> {
                               setState(() {
                                 _selectedFloor = i;
                               });
-                              _carouselController.animateToPage(i-1);
+                              _carouselController.animateToPage(i - 1);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                              _selectedFloor == i ? Colors.green : Colors.blue,
+                              backgroundColor: _selectedFloor == i
+                                  ? Colors.green
+                                  : Colors.blue,
                             ),
-                            child: Text('${test_st[i-1]}',style: TextStyle(fontSize: 11),),
+                            child: Text(
+                              '${test_st[i - 1]}',
+                              style: TextStyle(fontSize: 11),
+                            ),
                           ),
                         ),
                     ],
@@ -115,7 +121,7 @@ class _swiper_testState extends State<swiper_test> {
   int _selectedFloor = 1;
   CarouselController _carouselController = CarouselController();
 
-  List<int> test_ls = [1,2,3,4,5];
+  List<int> test_ls = [1, 2, 3, 4, 5];
 
   @override
   Widget build(BuildContext context) {
@@ -132,21 +138,22 @@ class _swiper_testState extends State<swiper_test> {
                 height: 400.0,
                 onPageChanged: (index, reason) {
                   setState(
-                        () {
+                    () {
                       _currentIndex = index;
                     },
                   );
                 },
               ),
-              items: [1,2,3,4,5].map(
-                    (i) {
+              items: [1, 2, 3, 4, 5].map(
+                (i) {
                   return Builder(
                     builder: (BuildContext context) {
                       return Container(
                         width: MediaQuery.of(context).size.width,
                         margin: EdgeInsets.symmetric(horizontal: 10.0),
                         decoration: BoxDecoration(
-                          color: _selectedFloor == i ? Colors.blue : Colors.amber,
+                          color:
+                              _selectedFloor == i ? Colors.blue : Colors.amber,
                         ),
                         child: Center(
                           child: Text(
@@ -175,9 +182,12 @@ class _swiper_testState extends State<swiper_test> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                        _selectedFloor == i ? Colors.green : Colors.blue,
+                            _selectedFloor == i ? Colors.green : Colors.blue,
                       ),
-                      child: Text('이미지 $i',style: TextStyle(fontSize: 11),),
+                      child: Text(
+                        '이미지 $i',
+                        style: TextStyle(fontSize: 11),
+                      ),
                     ),
                   ),
               ],

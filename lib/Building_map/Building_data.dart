@@ -19,6 +19,8 @@ class building_data {
   final List<int> _floors_low = <int>[];
   final List<int> _floors_height = <int>[];
 
+
+
   void addMarker(LatLng latLng, String name, int floors_l, int floors_h) {
     _LatLang.add(latLng);
     _buildingName.add(name);
@@ -37,7 +39,25 @@ class building_data {
     addMarker(LatLng(35.856479, 128.487114), "동산도서관", 0,7);
     addMarker(LatLng(35.856725, 128.489863), "행소박물관", -1,2);
     addMarker(LatLng(35.855549, 128.487740), "전산교육원", -1,2);
+    addMarker(LatLng(35.855308, 128.485636), "봉경관", 0,4);
   }
+
+  List<Marker> get_marker() {
+    return _markers;
+  }
+
+  List<LatLng> get_latlang() {
+    return _LatLang;
+  }
+
+  List<String> get_buildingName() {
+    return _buildingName;
+  }
+
+  LatLng building_change_latlang(String build) => _LatLang[_buildingName.indexOf(build)];
+
+
+
 
   List<String> make_building(String box)
   {
@@ -58,16 +78,5 @@ class building_data {
     return building;
   }
 
-  List<Marker> get_marker() {
-    return _markers;
-  }
-
-  List<LatLng> get_latlang() {
-    return _LatLang;
-  }
-
-  List<String> get_buildingName() {
-    return _buildingName;
-  }
 }
 

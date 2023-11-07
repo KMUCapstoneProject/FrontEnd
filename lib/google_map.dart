@@ -7,9 +7,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:get/get.dart';
 import 'package:project_2/Building_map/building_map.dart';
-import 'package:project_2/Building_map/drawer_page.dart';
+import 'package:project_2/drawer/drawer_page.dart';
+import 'package:project_2/road/road_data.dart';
 import 'package:project_2/search_page.dart';
-import 'Building_data.dart';
+import 'Building_map/Building_data.dart';
 
 class kmu_map extends StatefulWidget {
   const kmu_map({super.key});
@@ -46,8 +47,6 @@ class _kmu_mapState extends State<kmu_map> {
     });
     loadData();
   }
-
-  ///////
 
   loadData() {
     _customInfoWindowController.dispose();
@@ -91,7 +90,7 @@ class _kmu_mapState extends State<kmu_map> {
           },
         ),
       );
-      //setState(() {});
+      setState(() {});
     }
   }
 
@@ -99,9 +98,19 @@ class _kmu_mapState extends State<kmu_map> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Position>( // 데이터를 받아옴
+    return StreamBuilder<Position>(
+      // 데이터를 받아옴
       stream: Geolocator.getPositionStream(), // 현재 GPS위치를 받아옴
       builder: (context, snapshot) {
+        if (snapshot.hasData && road_data().get_latlng().isNotEmpty) {
+          final start = snapshot.data!;
+          final end = road_data().get_latlng()[0];
+          final distance = Geolocator.distanceBetween(
+              start.latitude, start.longitude, end.latitude, end.longitude);
+          if (distance < 18) {
+            road_data().reset_road();
+          }
+        }
         return GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -126,60 +135,43 @@ class _kmu_mapState extends State<kmu_map> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       ElevatedButton(
-                        onPressed: () async {
-                          await showSearch(
-                            context: context,
-                            delegate: Search_page(),
+                        onPressed: () {
+                          setState(() {
+                            road_data().input_road2("봉경관");
+                          });
+                        },
+                        child: Icon(Icons.wheelchair_pickup),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(
+                            () {
+                              showSearch(
+                                context: context,
+                                delegate: Search_page(),
+                              );
+                            },
                           );
                         },
                         child: Icon(Icons.search),
                       ),
-                      Builder(builder: (context) {
-                        return ElevatedButton(
-                            onPressed: () {
-                              Scaffold.of(context).openDrawer();
-                            },
-                            child: Icon(Icons.list_outlined));
-                      }),
+                      Builder(
+                        builder: (context) {
+                          return ElevatedButton(
+                              onPressed: () {
+                                Scaffold.of(context).openDrawer();
+                              },
+                              child: Icon(Icons.list_outlined));
+                        },
+                      ),
                       ElevatedButton(
                         onPressed: () {
-                          print(snapshot.data);/////////////////////GPS좌표 출력
-                          setState(
-                                () {
-                              if (test.isEmpty) {
-                                _markers.add(
-                                  Marker(
-                                    markerId: MarkerId("test"),
-                                    icon: BitmapDescriptor.defaultMarker,
-                                    position: LatLng(35.857577, 128.487243),
-                                  ),
-                                );
-                                test.add(
-                                  Polyline(
-                                    polylineId: PolylineId("value"),
-                                    points: [
-                                      LatLng(35.857577, 128.487243),
-                                      LatLng(35.859300, 128.486937),
-                                      LatLng(35.859820, 128.487069),
-                                      LatLng(35.859679, 128.487733),
-                                      LatLng(35.859171, 128.487625),
-                                      LatLng(35.859300, 128.486937),
-                                    ],
-                                    width: 2,
-                                  ),
-                                );
-                                test_circles_make();
-                              } else {
-                                test.clear();
-                                circles_test.clear();
-                                _markers.removeWhere(
-                                        (marker) => marker.markerId.value == 'test');
-                              }
-                            },
-                          );
+                          setState(() {
+                            road_data().reset_road();
+                          });
                         },
-                        child: Text("data"),
-                      ),
+                        child: Text("reset"),
+                      )
                     ],
                   ),
                 )
@@ -187,37 +179,16 @@ class _kmu_mapState extends State<kmu_map> {
             ),
           ),
         );
-      }
+      },
     );
-  }
-
-  final List<Polyline> test =
-      <Polyline>[]; ////////////////////////////////////test
-  final List<Circle> circles_test =
-      <Circle>[]; ////////////////////////////////////test
-
-  test_circles_make() {
-    for (int i = 0; i < _LatLang.length; i++) {
-      circles_test.add(
-        Circle(
-          circleId: CircleId("$i circle"),
-          center: _LatLang[i],
-          fillColor: Colors.blue.withOpacity(0.1),
-          radius: 30,
-          strokeColor: Colors.blue,
-          strokeWidth: 1,
-        ),
-      );
-    }
   }
 
   Widget google_option() {
     return GoogleMap(
       initialCameraPosition: initialPosition,
       markers: Set<Marker>.of(_markers),
-      polylines: Set<Polyline>.of(test),
-      ////////////////////////////////////////test
-      circles: Set<Circle>.of(circles_test),
+      polylines: Set<Polyline>.of(road_data().get_line()),
+      circles: Set<Circle>.of(road_data().get_circles()),
       myLocationEnabled: true,
       onMapCreated: (GoogleMapController controller) {
         googleMapController = controller;
