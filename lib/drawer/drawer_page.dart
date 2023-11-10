@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:project_2/registration_page.dart';
 import '../login_page.dart';
 
 class drawer_page extends StatefulWidget {
@@ -24,7 +25,9 @@ class _drawer_pageState extends State<drawer_page> {
               color: Colors.grey[850],
             ),
             title: change_test == 1 ? Text("행사 신청서") : Text("data"),
-            onTap: () {},
+            onTap: () {
+              Get.to(registration_page());
+            },
           ),
           ListTile(
             leading: Icon(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:get/get.dart';
 
 class registration_page extends StatefulWidget {
   const registration_page({super.key});
@@ -98,9 +99,13 @@ class _registration_pageState extends State<registration_page> {
   }
 
   // 앱바에 완료버튼을 누르면 이제 내용을 서버에 전송
-  upload() async {}
+  upload() async {
+
+  }
   // 앱바에 아이콘을 누르면 비교과프로그램 등록 이전 화면으로 이동
-  backScrean() async {}
+  backScrean() async {
+    Get.back();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +115,7 @@ class _registration_pageState extends State<registration_page> {
         title: const Text('비교과 프로그램 등록'),
         // 앱바의 왼쪽
         leading: IconButton(
-          onPressed: upload,
+          onPressed: backScrean,
           icon: const Icon(Icons.arrow_back_ios_new),
         ),
         // 앱바의 오른쪽
@@ -122,7 +127,7 @@ class _registration_pageState extends State<registration_page> {
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18))),
               ),
-              onPressed: backScrean,
+              onPressed: upload,
               child: const Text('완료'),
             ),
           ),
@@ -147,25 +152,31 @@ class _registration_pageState extends State<registration_page> {
                       decoration: BoxDecoration(border: Border.all(width: 1)),
                       child: Row(
                         children: [
-                          Container(
-                            decoration: const BoxDecoration(
-                                border: Border(right: BorderSide(width: 1))),
-                            child: IconButton(
-                              onPressed: setStartData,
-                              icon: const Icon(Icons.date_range_outlined),
+                          Expanded(
+                            flex: 10,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  border: Border(right: BorderSide(width: 1))),
+                              child: IconButton(
+                                onPressed: setStartData,
+                                icon: const Icon(Icons.date_range_outlined),
+                              ),
                             ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.only(
-                              left: 10,
-                            ),
-                            child: SizedBox(
-                              width: 105,
-                              height: 50,
-                              child: FittedBox(
-                                fit: BoxFit.contain,
-                                child: Text(
-                                  startDate,
+                          Expanded(
+                            flex: 25,
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                  left: 15,right: 15
+                              ),
+                              child: SizedBox(
+                                width: 105,
+                                height: 50,
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    startDate,
+                                  ),
                                 ),
                               ),
                             ),
@@ -185,25 +196,31 @@ class _registration_pageState extends State<registration_page> {
                       decoration: BoxDecoration(border: Border.all(width: 1)),
                       child: Row(
                         children: [
-                          Container(
-                            decoration: const BoxDecoration(
-                                border: Border(right: BorderSide(width: 1))),
-                            child: IconButton(
-                              onPressed: setEndData,
-                              icon: const Icon(Icons.date_range_outlined),
+                          Expanded(
+                            flex: 10,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  border: Border(right: BorderSide(width: 1))),
+                              child: IconButton(
+                                onPressed: setEndData,
+                                icon: const Icon(Icons.date_range_outlined),
+                              ),
                             ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.only(
-                              left: 10,
-                            ),
-                            child: SizedBox(
-                              width: 105,
-                              height: 50,
-                              child: FittedBox(
-                                fit: BoxFit.contain,
-                                child: Text(
-                                  endDate,
+                          Expanded(
+                            flex: 25,
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                  left: 15,right: 15
+                              ),
+                              child: SizedBox(
+                                width: 105,
+                                height: 50,
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    endDate,
+                                  ),
                                 ),
                               ),
                             ),
@@ -227,25 +244,31 @@ class _registration_pageState extends State<registration_page> {
                       decoration: BoxDecoration(border: Border.all(width: 1)),
                       child: Row(
                         children: [
-                          Container(
-                            decoration: const BoxDecoration(
-                                border: Border(right: BorderSide(width: 1))),
-                            child: IconButton(
-                              onPressed: setStartTime,
-                              icon: const Icon(Icons.access_time_sharp),
+                          Expanded(
+                            flex: 10,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  border: Border(right: BorderSide(width: 1))),
+                              child: IconButton(
+                                onPressed: setStartTime,
+                                icon: const Icon(Icons.access_time_sharp),
+                              ),
                             ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.only(
-                              left: 10,
-                            ),
-                            child: SizedBox(
-                              width: 105,
-                              height: 50,
-                              child: FittedBox(
-                                fit: BoxFit.contain,
-                                child: Text(
-                                  startTime,
+                          Expanded(
+                            flex: 25,
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                  left: 15,right: 15
+                              ),
+                              child: SizedBox(
+                                width: 105,
+                                height: 50,
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    startTime,
+                                  ),
                                 ),
                               ),
                             ),
@@ -265,25 +288,31 @@ class _registration_pageState extends State<registration_page> {
                       decoration: BoxDecoration(border: Border.all(width: 1)),
                       child: Row(
                         children: [
-                          Container(
-                            decoration: const BoxDecoration(
-                                border: Border(right: BorderSide(width: 1))),
-                            child: IconButton(
-                              onPressed: setEndTime,
-                              icon: const Icon(Icons.access_time_sharp),
+                          Expanded(
+                            flex: 10,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  border: Border(right: BorderSide(width: 1))),
+                              child: IconButton(
+                                onPressed: setEndTime,
+                                icon: const Icon(Icons.access_time_sharp),
+                              ),
                             ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.only(
-                              left: 10,
-                            ),
-                            child: SizedBox(
-                              width: 105,
-                              height: 50,
-                              child: FittedBox(
-                                fit: BoxFit.contain,
-                                child: Text(
-                                  endTime,
+                          Expanded(
+                            flex: 25,
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                  left: 15,right: 15
+                              ),
+                              child: SizedBox(
+                                width: 105,
+                                height: 50,
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    endTime,
+                                  ),
                                 ),
                               ),
                             ),
