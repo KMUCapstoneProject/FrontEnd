@@ -26,7 +26,6 @@ class _drawer_pageState extends State<drawer_page> {
             ),
             title: change_test == 1 ? Text("행사 신청서") : Text("data"),
             onTap: () {
-              Get.to(registration_page());
             },
           ),
           ListTile(
@@ -35,7 +34,9 @@ class _drawer_pageState extends State<drawer_page> {
               color: Colors.grey[850],
             ),
             title: Text("비교과 신청서"),
-            onTap: null,
+            onTap: (){
+              Get.to(registration_page());
+            },
           ),
         ],
       ),
