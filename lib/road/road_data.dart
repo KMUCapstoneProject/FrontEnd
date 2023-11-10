@@ -17,16 +17,17 @@ class road_data {
 
   road_data._internal() {}
 
-  void input_road(String building) {
-    LatLng data = building_data().building_change_latlang(building);
-    test_test.add(data);
+  void input_road(String building_start,String building_end) {
+    LatLng data_end = building_data().building_change_latlang(building_end);
+    LatLng data_start = building_data().building_change_latlang(building_start);
+    test_test.add(data_end);
     /*if (_circles.isEmpty!) {
       reset_road();
     }*/
     _circles.add(
       Circle(
         circleId: CircleId("circle_1"),
-        center: data,
+        center: data_end,
         radius: 30,
         fillColor: Colors.blue.withOpacity(0.3),
         strokeWidth: 2,
@@ -37,8 +38,8 @@ class road_data {
       Polyline(
         polylineId: PolylineId("test"),
         points: [
-          LatLng(35.855766, 128.487119), ////////////test
-          data,
+          data_start,
+          data_end,
         ],
         width: 1,
         color: Colors.blue,

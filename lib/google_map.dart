@@ -9,7 +9,8 @@ import 'package:get/get.dart';
 import 'package:project_2/Building_map/building_map.dart';
 import 'package:project_2/drawer/drawer_page.dart';
 import 'package:project_2/road/road_data.dart';
-import 'package:project_2/search_page.dart';
+import 'package:project_2/search/search_page.dart';
+import 'package:project_2/search/search_start_page.dart';
 import 'Building_map/Building_data.dart';
 
 class kmu_map extends StatefulWidget {
@@ -107,7 +108,7 @@ class _kmu_mapState extends State<kmu_map> {
           final end = road_data().get_latlng()[0];
           final distance = Geolocator.distanceBetween(
               start.latitude, start.longitude, end.latitude, end.longitude);
-          if (distance < 18) {
+          if (distance < 30) {
             road_data().reset_road();
           }
         }
@@ -143,15 +144,8 @@ class _kmu_mapState extends State<kmu_map> {
                         child: Icon(Icons.wheelchair_pickup),
                       ),
                       ElevatedButton(
-                        onPressed: () {
-                          setState(
-                            () {
-                              showSearch(
-                                context: context,
-                                delegate: Search_page(),
-                              );
-                            },
-                          );
+                        onPressed: () async {
+                          await Get.to(search_start_page());
                         },
                         child: Icon(Icons.search),
                       ),
