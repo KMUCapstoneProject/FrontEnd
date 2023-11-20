@@ -3,44 +3,77 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:project_2/user_data.dart';
 
-class mariaDB_server{
+class mariaDB_server {
   static final mariaDB_server _instance = mariaDB_server._internal();
   late Dio dio;
   late CookieJar cookieJar;
   final String url = "https://friedkimchi.kdedevelop.com/";
 
-
-  factory mariaDB_server(){
+  factory mariaDB_server() {
     return _instance;
   }
-  mariaDB_server._internal(){
+
+  mariaDB_server._internal() {
     dio = Dio();
     cookieJar = CookieJar();
     dio.options.followRedirects = true;
     dio.options.maxRedirects = 10;
-    dio.options.validateStatus = (status) => (status != null) && (status >= 200 && status <= 310);
+    dio.options.validateStatus =
+        (status) => (status != null) && (status >= 200 && status <= 310);
     dio.interceptors.add(CookieManager(cookieJar));
   }
 
-  Future<void> login(String email, String password) async {
-    Map<String, String> apiJoin = {'email': email, 'password': password};
-    String jsonApiJoin = jsonEncode(apiJoin);
+  Future<bool> login(String email, String password) async {
+    final formData = FormData.fromMap({
+      'email': email,
+      'password': password,
+    });
+
+    cookieJar.deleteAll();
     try {
       Response response =
-      await dio!.post("${this.url}api/login", data: jsonApiJoin);
-      print("성공");
+          await dio!.post("${this.url}api/login", data: formData);
     } catch (e) {
       if (e is DioException) {
         print('Bad Request: ${e.response!.data}');
       }
     }
-    return;
-  }
-  Future<void> logout() async {
+
+    try {
+      Response response =
+      await dio!.get("${this.url}api/info");
+      print("${response.data}");
+      print("${response.data["nickname"].toString()}");
+      print("${response.data["email"].toString()}");
+      print("${response.data["roles"].toString()}");
+
+
+      user_data().input_login_data(response.data["nickname"].toString(), response.data["email"].toString(), response.data["roles"].toString());
+
+
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
-  Future<void> create_member(String email, String nickname, String password) async {
+  Future<void> logout() async {
+    try {
+      Response response =
+      await dio!.get("${this.url}api/logout");
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+    }
+    cookieJar.deleteAll();
+    user_data().reset_login_data();
+  }
+
+  Future<void> create_member(
+      String email, String nickname, String password) async {
     String url_member = this.url + "api/join";
 
     Map<String, String> apiJoin = {
@@ -52,7 +85,7 @@ class mariaDB_server{
 
     try {
       Response response =
-      await dio!.post("${this.url}api/join", data: jsonApiJoin);
+          await dio!.post("${this.url}api/join", data: jsonApiJoin);
       if (response.statusCode == 201) {
         print('Success: ${response.data}');
       }
@@ -65,14 +98,12 @@ class mariaDB_server{
   }
 
   Future<void> event_registration_dio() async {
-    Map<String, String> apiJoin = {
-
-    };
+    Map<String, String> apiJoin = {};
     String jsonApiJoin = jsonEncode(apiJoin);
 
     try {
       Response response =
-      await dio!.post("${this.url}api/join", data: jsonApiJoin);
+          await dio!.post("${this.url}api/join", data: jsonApiJoin);
       if (response.statusCode == 201) {
         print('Success: ${response.data}');
       }
@@ -83,8 +114,6 @@ class mariaDB_server{
       }
     }
   }
-
-
 
 
 /*
@@ -128,4 +157,3 @@ class mariaDB_server{
     print("RESPONSE DATA : ${infoResponse.data}");
   }*/
 }
-

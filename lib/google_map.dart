@@ -13,6 +13,7 @@ import 'package:project_2/make_marker.dart';
 import 'package:project_2/road/road_data.dart';
 import 'package:project_2/search/search_page.dart';
 import 'package:project_2/search/search_start_page.dart';
+import 'package:project_2/user_data.dart';
 import 'Building_map/Building_data.dart';
 
 class kmu_map extends StatefulWidget {
@@ -121,9 +122,10 @@ class _kmu_mapState extends State<kmu_map> {
                       Builder(
                         builder: (context) {
                           return ElevatedButton(
-                              onPressed: () {
+                              onPressed: user_data().get_login_check() ?
+                                () {
                                 Scaffold.of(context).openDrawer();
-                              },
+                              } : null,
                               child: Icon(Icons.list_outlined));
                         },
                       ),
@@ -138,8 +140,8 @@ class _kmu_mapState extends State<kmu_map> {
                       ElevatedButton(
                         onPressed: () {
                           Get.to(login_page());
-                        },
-                        child: Text("login"),
+                          },
+                        child: user_data().get_login_check()? Text("login") : Text("logout"),
                       ),
                       ElevatedButton(
                         onPressed: () {
