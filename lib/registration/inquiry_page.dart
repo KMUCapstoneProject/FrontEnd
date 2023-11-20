@@ -8,6 +8,16 @@ class Inquiry extends StatefulWidget {
 }
 
 class _InquiryState extends State<Inquiry> {
+  final valueList = ['시스템 문제 보고', '길 찾기 문제 보고', '질문', '요청'];
+  String select = "";
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      select = valueList[0];
+    });
+  }
+
   upload() async {}
   backScrean() async {}
   @override
@@ -39,17 +49,32 @@ class _InquiryState extends State<Inquiry> {
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.fromLTRB(20, 80, 20, 0),
-          child: const Column(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              DropdownButton(
+                value: select,
+                items: valueList
+                    .map((e) => DropdownMenuItem(
+                  value: e, // 선택 시 onChanged 를 통해 반환할 value
+                  child: Text(e),
+                ))
+                    .toList(),
+                onChanged: (value) {
+                  // items 의 DropdownMenuItem 의 value 반환
+                  setState(() {
+                    select = value!;
+                  });
+                },
+              ),
+              const Text(
                 '문제 설명',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              TextField(
+              const TextField(
                 maxLines: 5,
                 style: TextStyle(
                   fontSize: 20,
@@ -60,17 +85,17 @@ class _InquiryState extends State<Inquiry> {
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 50,
               ),
-              Text(
+              const Text(
                 'Email',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              TextField(
+              const TextField(
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
