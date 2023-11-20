@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
 import 'package:project_2/Building_map/Building_data.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:project_2/img_file.dart';
 
 class swiper_test2 extends StatefulWidget {
   const swiper_test2({super.key});
@@ -14,13 +15,15 @@ class swiper_test2 extends StatefulWidget {
 class _swiper_test2State extends State<swiper_test2> {
   int _currentIndex = 0;
   int _selectedFloor = 1;
-  CarouselController _carouselController = CarouselController();
+  final CarouselController _carouselController = CarouselController();
+  final img_file building_img = img_file();
 
   building_data tes = building_data();
 
   @override
   Widget build(BuildContext context) {
     List<String> test_st = tes.make_building(Get.arguments);
+    int count =0;
 
     return Scaffold(
       appBar: AppBar(
@@ -54,9 +57,7 @@ class _swiper_test2State extends State<swiper_test2> {
                               : Colors.amber,
                         ),
                         child: Center(
-                          child: PhotoView(
-                            imageProvider: AssetImage("images/kmu_1.png"),
-                          ),
+                          child: Image.asset(img_building(Get.arguments, test_st.indexOf(i))),
                         ),
                       );
                     },
@@ -107,8 +108,29 @@ class _swiper_test2State extends State<swiper_test2> {
       ),
     );
   }
+  String img_building(String building_name,int count)
+  {
+    Map<String,List<String>> test = building_img.get_img_building();
+    bool check = test.containsKey(building_name);
+    if(check)
+      {
+        String? test_data = test["$building_name"]?[count];
+        if(test_data != null)
+          {
+            return test_data;
+          }
+      }
+    else
+      {
+        return "images/kmu_1.png";
+      }
+    return "images/kmu_1.png";
+  }
+
 }
 
+
+/*
 class swiper_test extends StatefulWidget {
   const swiper_test({super.key});
 
@@ -199,3 +221,4 @@ class _swiper_testState extends State<swiper_test> {
     );
   }
 }
+*/

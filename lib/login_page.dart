@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:project_2/Server_conn/mariaDB_server.dart';
 
 import 'member_make.dart';
 
@@ -11,6 +12,9 @@ class login_page extends StatefulWidget {
 }
 
 class _login_pageState extends State<login_page> {
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,10 +46,12 @@ class _login_pageState extends State<login_page> {
                     child: Column(
                       children: [
                         TextField(
-                          decoration: InputDecoration(labelText: 'ID'),
+                          controller: email,
+                          decoration: InputDecoration(labelText: 'Eamil'),
                           keyboardType: TextInputType.emailAddress,
                         ),
                         TextField(
+                          controller: password,
                           decoration: InputDecoration(labelText: 'Password'),
                           keyboardType: TextInputType.text,
                           obscureText: true,
@@ -69,7 +75,8 @@ class _login_pageState extends State<login_page> {
                           height: 50.0,
                           child: ElevatedButton(
                             onPressed: () {
-                               Get.back();
+
+                              mariaDB_server().login(email.text, password.text);
                             },
                             child: Icon(
                               Icons.arrow_forward,

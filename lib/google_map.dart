@@ -8,6 +8,8 @@ import 'package:custom_info_window/custom_info_window.dart';
 import 'package:get/get.dart';
 import 'package:project_2/Building_map/building_map.dart';
 import 'package:project_2/drawer/drawer_page.dart';
+import 'package:project_2/login_page.dart';
+import 'package:project_2/make_marker.dart';
 import 'package:project_2/road/road_data.dart';
 import 'package:project_2/search/search_page.dart';
 import 'package:project_2/search/search_start_page.dart';
@@ -21,19 +23,24 @@ class kmu_map extends StatefulWidget {
 }
 
 class _kmu_mapState extends State<kmu_map> {
-  static building_data data_box = building_data();
-  CustomInfoWindowController _customInfoWindowController =
-      CustomInfoWindowController();
+  static Make_marker make_marker = Make_marker();
+  static CustomInfoWindowController _customInfoWindowController =
+      make_marker.get_CIWC();
+  final List<Marker> _markers = make_marker.get_marker();
+  final List<Marker> _event_markers = make_marker.get_event_marker();
+  late List<Marker> _sum_markers = [];
+  late GoogleMapController googleMapController;
 
-  final List<Marker> _markers = data_box.get_marker();
-  final List<LatLng> _LatLang = data_box.get_latlang();
-
-  static final LatLng start_map = LatLng(35.855764, 128.487199);
+  static final LatLng start_map = LatLng(35.855764, 128.487199); //계명대학교 좌표
   static final CameraPosition initialPosition = CameraPosition(
     //카메라 위치 선정
     target: start_map, // 경위도
     zoom: 15, // 확대 정도
   );
+
+  void sum_mk() {
+    _sum_markers = _markers + _event_markers;
+  }
 
   ////지도 커스텀 영역
   String _mapStyle = "";
@@ -46,56 +53,10 @@ class _kmu_mapState extends State<kmu_map> {
     rootBundle.loadString('assets/map_style.txt').then((string) {
       _mapStyle = string;
     });
-    loadData();
+    sum_mk();
   }
 
-  loadData() {
-    _customInfoWindowController.dispose();
-    print("object");
-
-    for (int i = 0; i < _LatLang.length; i++) {
-      _markers.add(
-        Marker(
-          markerId: MarkerId(i.toString()),
-          icon: BitmapDescriptor.defaultMarker,
-          position: _LatLang[i],
-          onTap: () {
-            // 마커 클릭시
-            _customInfoWindowController.addInfoWindow!(
-              Container(
-                height: 300,
-                width: 200,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(data_box.get_buildingName()[i]),
-                    ElevatedButton(
-                      onPressed: () {
-                        Get.to(swiper_test2(),
-                            arguments: data_box.get_buildingName()[i]);
-                        _customInfoWindowController.hideInfoWindow!();
-                      },
-                      child: Text("건물내부"),
-                    )
-                  ],
-                ),
-              ),
-              _LatLang[i],
-            );
-          },
-        ),
-      );
-      setState(() {});
-    }
-  }
-
-  late GoogleMapController googleMapController;
+  int count = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -103,8 +64,9 @@ class _kmu_mapState extends State<kmu_map> {
       // 데이터를 받아옴
       stream: Geolocator.getPositionStream(), // 현재 GPS위치를 받아옴
       builder: (context, snapshot) {
+        //GPS가 원안에 들어 오면 원이 사라지는 코드
         if (snapshot.hasData && road_data().get_latlng().isNotEmpty) {
-          final start = snapshot.data!;
+          final start = snapshot.data!; //실시간 GPS 좌표
           final end = road_data().get_latlng()[0];
           final distance = Geolocator.distanceBetween(
               start.latitude, start.longitude, end.latitude, end.longitude);
@@ -139,13 +101,20 @@ class _kmu_mapState extends State<kmu_map> {
                         onPressed: () {
                           setState(() {
                             road_data().input_road2("봉경관");
+                            _goToPlace();
                           });
                         },
                         child: Icon(Icons.wheelchair_pickup),
                       ),
                       ElevatedButton(
                         onPressed: () async {
-                          await Get.to(search_start_page());
+                          final data = await Get.to(search_start_page());
+                          setState(() {
+                            if (data is List) {
+                              road_data().reset_road();
+                              road_data().input_road(data[0], data[1]);
+                            } else {}
+                          });
                         },
                         child: Icon(Icons.search),
                       ),
@@ -165,10 +134,32 @@ class _kmu_mapState extends State<kmu_map> {
                           });
                         },
                         child: Text("reset"),
-                      )
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Get.to(login_page());
+                        },
+                        child: Text("login"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            if (count == 1) {
+                              make_marker.input_marker(
+                                  35.854622, 128.487165, "event_1");
+                              count++;
+                            } else if (count == 2) {
+                              make_marker.input_marker(
+                                  35.855622, 128.487165, "event_2");
+                            }
+                            sum_mk();
+                          });
+                        },
+                        child: Text("marker_test"),
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -180,7 +171,7 @@ class _kmu_mapState extends State<kmu_map> {
   Widget google_option() {
     return GoogleMap(
       initialCameraPosition: initialPosition,
-      markers: Set<Marker>.of(_markers),
+      markers: Set<Marker>.of(_sum_markers),
       polylines: Set<Polyline>.of(road_data().get_line()),
       circles: Set<Circle>.of(road_data().get_circles()),
       myLocationEnabled: true,
@@ -199,5 +190,14 @@ class _kmu_mapState extends State<kmu_map> {
       zoomControlsEnabled: true,
       minMaxZoomPreference: MinMaxZoomPreference(16.7499995, 30),
     );
+  }
+
+  //화면 이동하는 방법
+  void _goToPlace() {
+    final double lat = 35.855764;
+    final double lng = 128.487199;
+    googleMapController.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(target: LatLng(lat, lng), zoom: 12),
+    ));
   }
 }

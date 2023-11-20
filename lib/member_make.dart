@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_2/Server_conn/mariaDB_server.dart';
 
 class member_make extends StatefulWidget {
   const member_make({super.key});
@@ -10,6 +11,9 @@ class member_make extends StatefulWidget {
 class _member_makeState extends State<member_make> {
   var _helper_text = "";
   var _overlap = "";
+  TextEditingController email = TextEditingController();
+  TextEditingController name = TextEditingController();
+  TextEditingController paword = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,6 @@ class _member_makeState extends State<member_make> {
 
   Column membership() {
     return Column(
-      //mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
           height: 20,
@@ -45,35 +48,13 @@ class _member_makeState extends State<member_make> {
               ),
               Expanded(
                 flex: 1,
-                child: Container(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(
-                            () {
-                          if (_helper_text == "인증완료") {
-                            _helper_text = "인증실패";
-                          } else {
-                            _helper_text = "인증완료";
-                          }
-                        },
-                      );
-                    },
-                    child: Text(
-                      "인증",
-                      style: TextStyle(fontSize: 15),
-                    ),
-                  ),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: Text("중복확인"),
                 ),
-              ),
+              )
             ],
           ),
-        ),
-        Container(
-          padding: EdgeInsets.only(left: 30, right: 30),
-          child: buildCertified(),
-        ),
-        SizedBox(
-          height: 20,
         ),
         Container(
           padding: EdgeInsets.only(left: 30, right: 30),
@@ -84,42 +65,24 @@ class _member_makeState extends State<member_make> {
                 flex: 4,
                 child: buildNickname(),
               ),
-              Expanded(
-                flex: 1,
-                child: ElevatedButton(
-                  onPressed: () {
-                    setState(
-                          () {
-                        if (_overlap == "중복없음") {
-                          _overlap = "중복인 아이디";
-                        } else {
-                          _overlap = "중복없음";
-                        }
-                      },
-                    );
-                  },
-                  child: Text(
-                    "중복확인",
-                    style: TextStyle(
-                      fontSize: 15,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
             ],
           ),
-        ),
-        Container(
-          padding: EdgeInsets.only(left: 30, right: 30),
-          child: buildPassword(),
         ),
         SizedBox(
           height: 30,
         ),
         Container(
-            padding: EdgeInsets.only(left: 30, right: 30),
-            child: buildPassword_chack()),
+          padding: EdgeInsets.only(left: 30, right: 30),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 4,
+                child: buildPassword(),
+              ),
+            ],
+          ),
+        ),
         SizedBox(
           height: 30,
         ),
@@ -127,7 +90,11 @@ class _member_makeState extends State<member_make> {
           width: 150,
           height: 50,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                mariaDB_server().create_member(email.text, name.text, paword.text);
+              });
+            },
             child: Text(
               "가입완료",
               style: TextStyle(fontSize: 23),
@@ -139,43 +106,46 @@ class _member_makeState extends State<member_make> {
   }
 
   Widget buildEmail() => TextField(
-    decoration: InputDecoration(
-      labelText: 'Email',
-      //border: OutlineInputBorder(), // 입력창 감싸기
-      helperText: '$_helper_text',
-    ),
-    textInputAction: TextInputAction.done,
-    keyboardType: TextInputType.emailAddress,
-  );
+        controller: email,
+        decoration: InputDecoration(
+          labelText: 'Email',
+          //border: OutlineInputBorder(), // 입력창 감싸기
+          helperText: '$_helper_text',
+        ),
+        textInputAction: TextInputAction.done,
+        keyboardType: TextInputType.emailAddress,
+      );
 
-  Widget buildCertified() => TextField(
+  /*Widget buildCertified() => TextField(
     //textAlign: TextAlign.center, 클릭했을떄 타이핑 위치를 조절함
     decoration: InputDecoration(
       labelText: '인증번호',
     ),
     keyboardType: TextInputType.text,
     obscureText: true,
-  );
+  );*/
 
   Widget buildNickname() => TextField(
-    //textAlign: TextAlign.center, 클릭했을떄 타이핑 위치를 조절함
-    decoration: InputDecoration(
-      labelText: '닉네임',
-      helperText: "$_overlap",
-    ),
-    keyboardType: TextInputType.text,
-    obscureText: true,
-  );
+        //textAlign: TextAlign.center, 클릭했을떄 타이핑 위치를 조절함
+        controller: name,
+        decoration: InputDecoration(
+          labelText: '닉네임',
+        ),
+        keyboardType: TextInputType.name,
+      );
 
   Widget buildPassword() => TextField(
-    //textAlign: TextAlign.center, 클릭했을떄 타이핑 위치를 조절함
-    decoration: InputDecoration(
-      labelText: '비밀번호',
-    ),
-    keyboardType: TextInputType.text,
-    obscureText: true,
-  );
+        //textAlign: TextAlign.center, 클릭했을떄 타이핑 위치를 조절함
+        controller: paword,
+        decoration: InputDecoration(
+          labelText: '비밀번호',
+          helperText: '$_overlap',
+        ),
+        keyboardType: TextInputType.text,
+        obscureText: true,
+      );
 
+/*
   Widget buildPassword_chack() => TextField(
     //textAlign: TextAlign.center, 클릭했을떄 타이핑 위치를 조절함
     decoration: InputDecoration(
@@ -184,4 +154,5 @@ class _member_makeState extends State<member_make> {
     keyboardType: TextInputType.text,
     obscureText: true,
   );
+  */
 }

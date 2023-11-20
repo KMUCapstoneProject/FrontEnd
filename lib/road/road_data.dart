@@ -18,8 +18,13 @@ class road_data {
   road_data._internal() {}
 
   void input_road(String building_start,String building_end) {
-    LatLng data_end = building_data().building_change_latlang(building_end);
+
+    if(building_start == "현재위치")
+      {
+        //서버에 현재 위치 넣어주기
+      }
     LatLng data_start = building_data().building_change_latlang(building_start);
+    LatLng data_end = building_data().building_change_latlang(building_end);
     test_test.add(data_end);
     /*if (_circles.isEmpty!) {
       reset_road();

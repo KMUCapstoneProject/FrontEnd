@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project_2/Building_map/Building_data.dart';
 import 'package:project_2/search/search_page.dart';
-
+import 'package:get/get.dart';
 import '../road/road_data.dart';
 
 class search_start_page extends StatefulWidget {
@@ -17,12 +17,16 @@ class _search_start_pageState extends State<search_start_page> {
   final controller = TextEditingController();
   final controller_2 = TextEditingController();
   bool _search = true;
-
+  Color _borderColor = Colors.grey;
+  Color _borderColor1 = Colors.grey;
+  Color _borderColor2 = Colors.grey;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("data"),
+        automaticallyImplyLeading: false,
+        title: Text("검색"),
+        centerTitle: true,
       ),
       body: Stack(
         children: [
@@ -66,7 +70,7 @@ class _search_start_pageState extends State<search_start_page> {
                   });
                 },
                 child: Icon(Icons.gps_fixed),
-              )
+              ),
             ],
           ),
           Padding(
@@ -99,14 +103,20 @@ class _search_start_pageState extends State<search_start_page> {
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.search),
         hintText: "출발지점",
-        border: OutlineInputBorder(
+        focusedBorder: OutlineInputBorder( //TextField 클릭시 창 테두리 style
           borderRadius: BorderRadius.only(topLeft: Radius.circular(15)),
-          borderSide: const BorderSide(color: Colors.blue),
+          borderSide: BorderSide(color: Colors.blue,width: 3.0),
+        ),
+        enabledBorder: OutlineInputBorder( //TextField 창 테두리 style
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(15)),
+          borderSide: BorderSide(color: _borderColor1,width: 1.0),
         ),
       ),
       onChanged: search,
       onTap: () {
+        _borderColor1 = Colors.grey;
         _search = true;
+        search("");
       },
     );
   } // search 함수 요기 있음
@@ -119,14 +129,20 @@ class _search_start_pageState extends State<search_start_page> {
           decoration: InputDecoration(
             prefixIcon: const Icon(Icons.search),
             hintText: "도착지점",
-            border: OutlineInputBorder(
+            focusedBorder: OutlineInputBorder( //TextField 클릭시 창 테두리 style
               borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15)),
-              borderSide: const BorderSide(color: Colors.blue),
+              borderSide: BorderSide(color: Colors.blue,width: 3.0),
+            ),
+            enabledBorder: OutlineInputBorder( //TextField 창 테두리 style
+              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15)),
+              borderSide: BorderSide(color: _borderColor2,width: 1.0),
             ),
           ),
           onChanged: search,
           onTap: () {
+            _borderColor2 = Colors.grey;
             _search = false;
+            search("");
           },
         ),
       ],
@@ -159,38 +175,30 @@ class _search_start_pageState extends State<search_start_page> {
   }
 
   Widget search_button() {
-    return OutlinedButton(
-      onPressed: () {
-        setState(() {
-          String start = controller.text;
-          String end = controller_2.text;
-
-          switch(error_check(start,end))
-          {
-            case 0 : break;
-            case 1 : break;
-            case 2 : break;
-          }
-          if(true)
-            {
-              road_data().reset_road();
-              road_data().input_road(controller.text,controller_2.text);
-            }
-        });
-      },
-      child: Icon(
-        Icons.search,
-        size: 50,
-      ),
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomRight: Radius.circular(15),
-            topRight: Radius.circular(15),
-          ),
+    return GestureDetector(
+      child: OutlinedButton(
+        onPressed: () {
+          FocusScope.of(context).unfocus(); //키보드 내리기
+          setState(() {
+            String start = controller.text;
+            String end = controller_2.text;
+            error_check(start, end);
+          });
+        },
+        child: Icon(
+          Icons.search,
+          size: 50,
         ),
-        side: BorderSide(color: Colors.grey, width: 1),
-        fixedSize: Size(100, 118),
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              bottomRight: Radius.circular(15),
+              topRight: Radius.circular(15),
+            ),
+          ),
+          side: BorderSide(color: Colors.grey, width: 1),
+          fixedSize: Size(100, 118),
+        ),
       ),
     );
   } // 검색버튼
@@ -206,9 +214,32 @@ class _search_start_pageState extends State<search_start_page> {
     });
   }
 
-  int error_check(String start,String end)
-  {
-
-    return 1;
+  void error_check(String start,String end) {
+    List<String> data = [start,end];
+    bool a = test.contains(start);
+    bool b = test.contains(end);
+    if((a|| start == "현재위치") && b )
+      {
+        Get.back(result: data);
+      }
+    else if((!a|| start != "현재위치") && b)
+      {
+        setState(() {
+          _borderColor1 = Colors.red;
+        });
+      }
+    else if((a|| start == "현재위치") && !b)
+      {
+        setState(() {
+          _borderColor2 = Colors.red;
+        });
+      }
+    else
+      {
+        setState(() {
+          _borderColor1 = Colors.red;
+          _borderColor2 = Colors.red;
+        });
+      }
   }
 }

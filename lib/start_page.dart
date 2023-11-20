@@ -34,7 +34,7 @@ class _start_pageState extends State<start_page> {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                Get.offAll(kmu_map());
+                Get.to(kmu_map());
               },
               child: Text("시작"),
             ),
