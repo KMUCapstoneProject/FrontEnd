@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:get/get.dart';
+import 'package:project_2/Server_conn/mariaDB_server.dart';
 import 'package:project_2/registration/search_google.dart';
 
 class event_registration extends StatefulWidget {
@@ -16,6 +17,14 @@ class event_registration extends StatefulWidget {
 
 class _event_registrationState extends State<event_registration> {
   List<XFile> imageFiles = [];
+
+  //제목 컨트롤러
+  TextEditingController title_ctr = TextEditingController();
+  //내용 컨트롤러
+  TextEditingController content_ctr = TextEditingController();
+
+
+  //경위도
   String Lat = "                 ";
   String Lng = "                 ";
 
@@ -105,7 +114,14 @@ class _event_registrationState extends State<event_registration> {
   }
 
   // 앱바에 완료버튼을 누르면 이제 내용을 서버에 전송
-  upload() async {}
+  upload() async {
+    print("$startDate  $startTime:00  $endDate   $endTime:00");
+    print("$Lat $Lng");
+    print("${title_ctr.text}");
+    print("${content_ctr.text}");
+    //mariaDB_server().event_registration_input(title, content, start, end, a, b, lat, log);
+
+  }
 
   // 앱바에 아이콘을 누르면 비교과프로그램 등록 이전 화면으로 이동
   backScrean() async {
@@ -117,6 +133,19 @@ class _event_registrationState extends State<event_registration> {
     return Scaffold(
       appBar: AppBar(
         title: Text("행사신청"),
+        actions: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            child: ElevatedButton(
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18))),
+              ),
+              onPressed: upload,
+              child: const Text('완료'),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         //스크롤 할수있게하는 위젯
@@ -126,65 +155,91 @@ class _event_registrationState extends State<event_registration> {
               height: 10,
             ),
             Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // 시작 날짜 부분
                   Flexible(
-                    child: OutlinedButton(
-                      onPressed: setStartData,
-                      child: Icon(Icons.date_range_outlined),
-                      style: ElevatedButton.styleFrom(
-                          side: BorderSide(color: Colors.black, width: 1.3),
-                          fixedSize: Size(100, 60),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0),
-                          )),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 2,
+                    flex: 4,
                     child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                      ),
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(
-                          startDate,
-                        ),
+                      decoration: BoxDecoration(border: Border.all(width: 1)),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 10,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  border: Border(right: BorderSide(width: 1))),
+                              child: IconButton(
+                                onPressed: setStartData,
+                                icon: const Icon(Icons.date_range_outlined),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 25,
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                  left: 15,right: 15
+                              ),
+                              child: SizedBox(
+                                width: 105,
+                                height: 50,
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    startDate,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   ),
-                  Text(
+                  const Text(
                     '~',
                     style: TextStyle(fontSize: 23),
                   ),
+                  // 마감 날짜 부분
                   Flexible(
-                    child: OutlinedButton(
-                      onPressed: setEndData,
-                      child: Icon(Icons.date_range_outlined),
-                      style: ElevatedButton.styleFrom(
-                        side: BorderSide(color: Colors.black, width: 1.3),
-                        fixedSize: Size(100, 60),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 2,
+                    flex: 4,
                     child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                      ),
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(
-                          endDate,
-                        ),
+                      decoration: BoxDecoration(border: Border.all(width: 1)),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 10,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  border: Border(right: BorderSide(width: 1))),
+                              child: IconButton(
+                                onPressed: setEndData,
+                                icon: const Icon(Icons.date_range_outlined),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 25,
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                  left: 15,right: 15
+                              ),
+                              child: SizedBox(
+                                width: 105,
+                                height: 50,
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    endDate,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   ),
@@ -192,66 +247,91 @@ class _event_registrationState extends State<event_registration> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // 시작 시간 부분
                   Flexible(
-                    child: OutlinedButton(
-                      onPressed: setStartTime,
-                      child: Icon(Icons.access_time_sharp),
-                      style: ElevatedButton.styleFrom(
-                        side: BorderSide(color: Colors.black, width: 1.3),
-                        fixedSize: Size(100, 60),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 2,
+                    flex: 4,
                     child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                      ),
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(
-                          startTime,
-                        ),
+                      decoration: BoxDecoration(border: Border.all(width: 1)),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 10,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  border: Border(right: BorderSide(width: 1))),
+                              child: IconButton(
+                                onPressed: setStartTime,
+                                icon: const Icon(Icons.access_time_sharp),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 25,
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                  left: 15,right: 15
+                              ),
+                              child: SizedBox(
+                                width: 105,
+                                height: 50,
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    startTime,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   ),
-                  Text(
+                  const Text(
                     '~',
                     style: TextStyle(fontSize: 23),
                   ),
+                  // 마감 시간 부분
                   Flexible(
-                    child: OutlinedButton(
-                      onPressed: setEndTime,
-                      child: Icon(Icons.access_time_sharp),
-                      style: ElevatedButton.styleFrom(
-                        side: BorderSide(color: Colors.black, width: 1.3),
-                        fixedSize: Size(100, 60),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 2,
+                    flex: 4,
                     child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                      ),
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(
-                          endTime,
-                        ),
+                      decoration: BoxDecoration(border: Border.all(width: 1)),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 10,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  border: Border(right: BorderSide(width: 1))),
+                              child: IconButton(
+                                onPressed: setEndTime,
+                                icon: const Icon(Icons.access_time_sharp),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 25,
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                  left: 15,right: 15
+                              ),
+                              child: SizedBox(
+                                width: 105,
+                                height: 50,
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    endTime,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   ),
@@ -269,6 +349,8 @@ class _event_registrationState extends State<event_registration> {
                       setState(() {
                         Lat = data.latitude.toStringAsFixed(5);
                         Lng = data.longitude.toStringAsFixed(5);
+                        print("${data.latitude} ${data.latitude.runtimeType}");
+                        print("${data.longitude} ${data.longitude.runtimeType}");
                       });
                     },
                     child: Text("위치"),
@@ -353,14 +435,16 @@ class _event_registrationState extends State<event_registration> {
             const SizedBox(
               height: 15,
             ),
-            const TextField(
+             TextField(
+              controller: title_ctr,
               style: TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.w600,
               ),
               decoration: InputDecoration(hintText: '제목을 입력하세요(필수)'),
             ),
-            const TextField(
+             TextField(
+              controller: content_ctr,
               maxLines: 1000,
               style: TextStyle(
                 fontSize: 20,
@@ -374,3 +458,5 @@ class _event_registrationState extends State<event_registration> {
     );
   }
 }
+
+

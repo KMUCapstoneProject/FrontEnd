@@ -141,7 +141,7 @@ class _kmu_mapState extends State<kmu_map> {
                         onPressed: () {
                           Get.to(login_page());
                           },
-                        child: user_data().get_login_check()? Text("login") : Text("logout"),
+                        child: user_data().get_login_check()? Text("logout") : Text("login"),
                       ),
                       ElevatedButton(
                         onPressed: () {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Inquiry extends StatefulWidget {
   const Inquiry({super.key});
@@ -19,18 +20,13 @@ class _InquiryState extends State<Inquiry> {
   }
 
   upload() async {}
-  backScrean() async {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text('문의'),
-        // 앱바의 왼쪽
-        leading: IconButton(
-          onPressed: backScrean,
-          icon: const Icon(Icons.arrow_back_ios_new),
-        ),
         // 앱바의 오른쪽
         actions: [
           Container(

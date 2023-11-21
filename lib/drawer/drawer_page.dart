@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project_2/drawer/event_list.dart';
 import 'package:project_2/registration/event_registration_page.dart';
+import 'package:project_2/registration/inquiry_page.dart';
 import 'package:project_2/registration/registration_page.dart';
 import 'package:project_2/user_data.dart';
 import '../login_page.dart';
@@ -39,8 +40,8 @@ class _drawer_pageState extends State<drawer_page> {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text(user_data().get_nickname()),
-            accountEmail: Text(user_data().get_email()),
+            accountName: Text("nickname : ${user_data().get_nickname()}"),
+            accountEmail: Text("email : ${user_data().get_email()}"),
           ),
           ListTile(
             leading: Icon(
@@ -50,6 +51,16 @@ class _drawer_pageState extends State<drawer_page> {
             title: Text("행사 및 비교과 수신함"),
             onTap: () {
               Get.to(event_list());
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.find_in_page_rounded,
+              color: Colors.grey[850],
+            ),
+            title: Text("오류 수신함"),
+            onTap: () {
+
             },
           )
         ],
@@ -64,8 +75,8 @@ class _drawer_pageState extends State<drawer_page> {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text(user_data().get_nickname()),
-            accountEmail: Text(user_data().get_email()),
+            accountName: Text("nickname : ${user_data().get_nickname()}"),
+            accountEmail: Text("email : ${user_data().get_email()}"),
           ),
           ListTile(
             leading: Icon(
@@ -85,6 +96,16 @@ class _drawer_pageState extends State<drawer_page> {
             title: Text("행사 신청서"),
             onTap: () {
               Get.to(event_registration());
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.find_in_page_rounded,
+              color: Colors.grey[850],
+            ),
+            title: Text("오류접수"),
+            onTap: () {
+              Get.to(Inquiry());
             },
           )
         ],
@@ -99,8 +120,8 @@ class _drawer_pageState extends State<drawer_page> {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text(user_data().get_nickname()),
-            accountEmail: Text(user_data().get_email()),
+            accountName: Text("nickname : ${user_data().get_nickname()}"),
+            accountEmail: Text("email : ${user_data().get_email()}"),
           ),
           ListTile(
             leading: Icon(
@@ -120,6 +141,36 @@ class _drawer_pageState extends State<drawer_page> {
             title: Text("행사 신청서"),
             onTap: () {
               Get.to(event_registration());
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.find_in_page_rounded,
+              color: Colors.grey[850],
+            ),
+            title: Text("오류접수"),
+            onTap: () {
+              Get.to(Inquiry());
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.find_in_page_rounded,
+              color: Colors.grey[850],
+            ),
+            title: Text("행사 및 비교과 수신함"),
+            onTap: () {
+              Get.to(event_list());
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.find_in_page_rounded,
+              color: Colors.grey[850],
+            ),
+            title: Text("오류 수신함"),
+            onTap: () {
+
             },
           )
         ],

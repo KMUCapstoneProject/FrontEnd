@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
@@ -52,7 +51,6 @@ class mariaDB_server {
 
       user_data().input_login_data(response.data["nickname"].toString(), response.data["email"].toString(), response.data["roles"].toString());
 
-
       return true;
     } catch (e) {
       return false;
@@ -97,11 +95,21 @@ class mariaDB_server {
     }
   }
 
-  Future<void> event_registration_dio() async {
-    Map<String, String> apiJoin = {};
+  Future<void> event_registration_input(String title, String content,DateTime start,DateTime end,int a,int b, double lat, double log) async {
+    print("$start  $end  ");
+    Map<String, dynamic> apiJoin = {
+      "categoryId" :  a,
+      "title" : title,
+      "content" : content,
+      "startTime" : start,
+      "deadline" : end,
+      "latitude" : lat,
+      "longitude" : log
+    };
+
     String jsonApiJoin = jsonEncode(apiJoin);
 
-    try {
+    /*try {
       Response response =
           await dio!.post("${this.url}api/join", data: jsonApiJoin);
       if (response.statusCode == 201) {
@@ -112,8 +120,26 @@ class mariaDB_server {
       if (e is DioException) {
         print('Bad Request: ${e.response!.data}');
       }
+    }*/
+  }
+
+
+  Future<void> event_registration_get(String a) async {
+
+    try {
+      Response response =
+      await dio!.get("${this.url}api/posting/list?categoryId=0");
+      if (response.statusCode == 201) {
+        print('Success: ${response.data}');
+      }
+      print("object");
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
     }
   }
+
 
 
 /*
