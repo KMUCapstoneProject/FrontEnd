@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class Inquiry extends StatefulWidget {
   const Inquiry({super.key});
@@ -11,6 +10,7 @@ class Inquiry extends StatefulWidget {
 class _InquiryState extends State<Inquiry> {
   final valueList = ['시스템 문제 보고', '길 찾기 문제 보고', '질문', '요청'];
   String select = "";
+
   @override
   void initState() {
     super.initState();
@@ -24,31 +24,49 @@ class _InquiryState extends State<Inquiry> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 239, 239, 239),
       appBar: AppBar(
-        centerTitle: true,
-        title: const Text('문의'),
-        // 앱바의 오른쪽
-        actions: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            child: ElevatedButton(
-              style: ButtonStyle(
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18))),
-              ),
-              onPressed: upload,
-              child: const Text('제출'),
-            ),
-          ),
-        ],
+        title: const Text(
+          '문의하기',
+          style: TextStyle(fontSize: 25),
+        ),
+        // 앱바의 왼쪽
+        leading: IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.arrow_back_ios_new),
+        ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(20, 80, 20, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              DropdownButton(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        margin: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: SingleChildScrollView(
+          child:
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: const Text(
+                '이메일',
+                style: TextStyle(fontSize: 15),
+              ),
+            ),
+            TextField(
+              decoration: InputDecoration(
+                hintText: '이메일을 입력하세요',
+                hintStyle: TextStyle(color: Colors.grey[400]),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: DropdownButton(
                 value: select,
                 items: valueList
                     .map((e) => DropdownMenuItem(
@@ -63,45 +81,56 @@ class _InquiryState extends State<Inquiry> {
                   });
                 },
               ),
-              const Text(
-                '문제 설명',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
+            ),
+            Container(
+                margin: const EdgeInsets.all(10),
+                child: const Text(
+                  '제목',
+                  style: TextStyle(fontSize: 15),
+                )),
+            TextField(
+              decoration: InputDecoration(
+                hintText: '제목을 입력하세요',
+                hintStyle: TextStyle(color: Colors.grey[400]),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              const TextField(
-                maxLines: 5,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                ),
-                decoration: InputDecoration(
-                  hintText: '문제를 자세히 설명해주세요',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              const Text(
-                'Email',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
+            ),
+            Container(
+                margin: const EdgeInsets.all(10),
+                child: const Text(
+                  '문의 내용',
+                  style: TextStyle(fontSize: 15),
+                )),
+            TextField(
+              maxLines: 10,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              const TextField(
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                ),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-              )
-            ],
-          ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: upload,
+                      child: Container(
+                        margin: const EdgeInsets.all(10),
+                        child: const Text(
+                          '제출',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ]),
         ),
       ),
     );
