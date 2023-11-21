@@ -66,6 +66,7 @@ class _event_registrationState extends State<event_registration> {
   }
 
   // 달력을 보여주고 선택한 날짜를 endData에 저장하는 함수
+
   setEndData() async {
     DateTime? selectedDate;
     if (startDate != '시작 날짜') {
@@ -87,7 +88,6 @@ class _event_registrationState extends State<event_registration> {
         lastDate: DateTime(2027),
       );
     }
-
     setState(() {
       if (selectedDate != null) {
         endDate = selectedDate.toString().split(" ")[0];
