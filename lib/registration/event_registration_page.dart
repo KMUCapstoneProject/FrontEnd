@@ -68,17 +68,24 @@ class _event_registrationState extends State<event_registration> {
   // 달력을 보여주고 선택한 날짜를 endData에 저장하는 함수
   setEndData() async {
     DateTime? selectedDate;
-    selectedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2022),
-      lastDate: DateTime(2027),
-    );
-    setState(() {
-      if (selectedDate != null) {
-        endDate = selectedDate.toString().split(" ")[0];
-      }
-    });
+    if (startDate != '시작 날짜') {
+      List<String> date = startDate.split('-');
+      int year = int.parse(date[0]);
+      int month = int.parse(date[1]);
+      int day = int.parse(date[2]);
+      selectedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime(year, month, day),
+        firstDate: DateTime(year, month, day),
+        lastDate: DateTime(2027),
+      );
+    }else{
+      selectedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2022),
+        lastDate: DateTime(2027),
+      );
   }
 
   // 시작시간 설정
