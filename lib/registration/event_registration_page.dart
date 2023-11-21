@@ -86,6 +86,13 @@ class _event_registrationState extends State<event_registration> {
         firstDate: DateTime(2022),
         lastDate: DateTime(2027),
       );
+    }
+
+    setState(() {
+      if (selectedDate != null) {
+        endDate = selectedDate.toString().split(" ")[0];
+      }
+    });
   }
 
   // 시작시간 설정
