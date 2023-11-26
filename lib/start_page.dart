@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:project_2/google_map.dart';
+import 'package:project_2/google_map_page/google_map.dart';
 
 class start_page extends StatefulWidget {
   const start_page({super.key});
@@ -34,7 +34,7 @@ class _start_pageState extends State<start_page> {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                Get.to(kmu_map());
+                Get.off(kmu_map());
               },
               child: Text("시작"),
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Inquiry extends StatefulWidget {
   const Inquiry({super.key});
@@ -32,7 +33,9 @@ class _InquiryState extends State<Inquiry> {
         ),
         // 앱바의 왼쪽
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Get.back();
+          },
           icon: const Icon(Icons.arrow_back_ios_new),
         ),
       ),

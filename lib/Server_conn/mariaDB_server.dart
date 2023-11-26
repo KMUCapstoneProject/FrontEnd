@@ -24,7 +24,9 @@ class mariaDB_server {
     dio.interceptors.add(CookieManager(cookieJar));
   }
 
-  Future<bool> login(String email, String password) async {
+
+  //로그인
+  Future<Map<String,dynamic>> login(String email, String password) async {
     final formData = FormData.fromMap({
       'email': email,
       'password': password,
@@ -39,24 +41,20 @@ class mariaDB_server {
         print('Bad Request: ${e.response!.data}');
       }
     }
-
     try {
       Response response =
       await dio!.get("${this.url}api/info");
-      print("${response.data}");
-      print("${response.data["nickname"].toString()}");
-      print("${response.data["email"].toString()}");
-      print("${response.data["roles"].toString()}");
-
-
-      user_data().input_login_data(response.data["nickname"].toString(), response.data["email"].toString(), response.data["roles"].toString());
-
-      return true;
+      //print("${response.data}");
+      //print("${response.data["nickname"].toString()}");
+      //print("${response.data["email"].toString()}");
+      //print("${response.data["roles"].toString()}");
+      return response.data;
     } catch (e) {
-      return false;
+      return {};
     }
   }
 
+  //로그아웃
   Future<void> logout() async {
     try {
       Response response =
@@ -70,8 +68,8 @@ class mariaDB_server {
     user_data().reset_login_data();
   }
 
-  Future<void> create_member(
-      String email, String nickname, String password) async {
+  //회원가입
+  Future<void> create_member(String email, String nickname, String password) async {
     String url_member = this.url + "api/join";
 
     Map<String, String> apiJoin = {
@@ -87,7 +85,6 @@ class mariaDB_server {
       if (response.statusCode == 201) {
         print('Success: ${response.data}');
       }
-      print("object");
     } catch (e) {
       if (e is DioException) {
         print('Bad Request: ${e.response!.data}');
@@ -95,40 +92,73 @@ class mariaDB_server {
     }
   }
 
-  Future<void> event_registration_input(String title, String content,DateTime start,DateTime end,int a,int b, double lat, double log) async {
-    print("$start  $end  ");
+  //비교과 및 행사 신청서 보내기
+  Future<void> event_registration_input(int category,String title, String content,String start,String end, double lat, double log,String details) async {
+
     Map<String, dynamic> apiJoin = {
-      "categoryId" :  a,
+      "categoryId" :  category,
       "title" : title,
       "content" : content,
       "startTime" : start,
       "deadline" : end,
       "latitude" : lat,
-      "longitude" : log
+      "longitude" : log,
+      "details" : details
     };
 
     String jsonApiJoin = jsonEncode(apiJoin);
-
-    /*try {
+    try {
       Response response =
-          await dio!.post("${this.url}api/join", data: jsonApiJoin);
+          await dio!.post("${this.url}api/posting/add", data: jsonApiJoin);
       if (response.statusCode == 201) {
         print('Success: ${response.data}');
       }
-      print("object");
     } catch (e) {
       if (e is DioException) {
         print('Bad Request: ${e.response!.data}');
       }
-    }*/
+    }
   }
 
-
-  Future<void> event_registration_get(String a) async {
-
+  //신청완료 행사 받기
+  Future<List<dynamic>> event_registration_get1() async {
     try {
       Response response =
-      await dio!.get("${this.url}api/posting/list?categoryId=0");
+      await dio!.get("${this.url}api/posting/list?categoryId=1");
+      if (response.statusCode == 201) {
+        print('Success: ${response.data}');
+        return response.data;
+      }
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+    }
+    return <dynamic>[];
+  }
+
+  //신청완료 비교과 받기
+  Future<List<dynamic>> event_registration_get2() async {
+    try {
+      Response response =
+      await dio!.get("${this.url}api/posting/list?categoryId=2");
+      if (response.statusCode == 201) {
+        print('Success: ${response.data}');
+        return response.data;
+      }
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+    }
+    return <dynamic>[];
+  }
+
+  //빈 강의실 정보 받기기
+  Future<void> find_room(String building_name) async {
+    try {
+      Response response =
+      await dio!.get("${this.url}api/timetable/findRoominBuilding?building=공1");
       if (response.statusCode == 201) {
         print('Success: ${response.data}');
       }
@@ -140,8 +170,51 @@ class mariaDB_server {
     }
   }
 
+  //비교과 신청 완료 안된 내용
+  Future<List<dynamic>> event_list() async {
+    try {
+      Response response =
+      await dio!.get("${this.url}admin/posting/list/waiting0");
+      if (response.statusCode == 200) {
+        return response.data;
+      }
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+    }
+    return <dynamic>[];
+  }
 
+  //게시물 삭제
+  Future<void> event_list_delete(int postId) async {
+    try {
+      Response response =
+      await dio!.get("${this.url}api/posting/delete?postId=$postId");
+      if (response.statusCode == 200) {
+        print(response.data);
+      }
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+    }
+  }
 
+  //게시물 수락
+  Future<void> event_list_upgrade(int postId) async {
+    try {
+      Response response =
+      await dio!.get("${this.url}admin/posting/updatestatus?postId=$postId");
+      if (response.statusCode == 200) {
+        print(response.data);
+      }
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+    }
+  }
 /*
  Future<void> fetchData() async {
     try {

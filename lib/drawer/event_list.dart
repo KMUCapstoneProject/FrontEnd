@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:project_2/Server_conn/mariaDB_server.dart';
 import 'package:project_2/drawer/event_content_page.dart';
+
 
 class event_list extends StatefulWidget {
   const event_list({super.key});
@@ -11,32 +13,33 @@ class event_list extends StatefulWidget {
 }
 
 class _event_list extends State<event_list> {
-  var titlelist = [
-    "test 행사",
-    "test1 비교과",
-    "test2",
-    "test3",
-    "test4",
-    "test5",
-    "test6",
-    "test7",
-    "test8",
-    "test9",
-    "test10",
-  ];
+
+  List<dynamic> _psrl = <dynamic>[];
+  bool loading = false;
+
+  void initState() {
+    super.initState();
+    mariaDB_server().event_list().then((value){
+      setState(() {
+        _psrl = value;
+        loading = true;
+      });
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("data"),
+        title: loading ? Text("비교과 및 행사 수신함") : Text("loading..."),
       ),
       body: ListView.builder(
-        itemCount: titlelist.length,
+        itemCount: _psrl.length,
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: (){
-              Get.to(event_content_page(),arguments: titlelist[index]);
+            onTap: () async {
+              await Get.off(event_content_page(),arguments: _psrl[index]);
             },
             child: Card(
               child: Row(
@@ -51,7 +54,7 @@ class _event_list extends State<event_list> {
                     child: Column(
                       children: [
                         Text(
-                          titlelist[index],
+                          _psrl[index]["title"],
                           style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,

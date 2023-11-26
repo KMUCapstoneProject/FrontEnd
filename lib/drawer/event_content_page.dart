@@ -1,15 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:project_2/Server_conn/mariaDB_server.dart';
+import 'package:project_2/drawer/event_list.dart';
 
 class event_content_page extends StatelessWidget {
   const event_content_page({super.key});
 
   @override
   Widget build(BuildContext context) {
+
+    Map<String,dynamic> _psrl_data = Get.arguments;
+
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(Get.arguments),
+        title: Text(_psrl_data["postId"].toString()),
         centerTitle: true,
       ),
       body: Center(
@@ -28,34 +34,34 @@ class event_content_page extends StatelessWidget {
                 flex: 1,
                 child: Container(
                   child: Text(
-                    "제목",
+                    "제목: ${_psrl_data["title"]}",
+                    style: TextStyle(fontSize: 25),
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  child: Text(
+                    "시간 : \n ${_psrl_data["startTime"]} ~ ${_psrl_data["deadline"]}",
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
               ),
               Expanded(
-                flex: 1,
+                flex: 2,
                 child: Container(
                   child: Text(
-                    "시간",
+                    "장소 : ${_psrl_data["details"]}",
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
               ),
               Expanded(
-                flex: 1,
+                flex: 4,
                 child: Container(
                   child: Text(
-                    "장소",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Container(
-                  child: Text(
-                    "내용",
+                    "내용\n ${_psrl_data["content"]}",
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
@@ -66,14 +72,16 @@ class event_content_page extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        Get.back();
+                      onPressed: () async {
+                        await mariaDB_server().event_list_upgrade(_psrl_data["postId"]);
+                        Get.off(event_list());
                       },
                       child: Text("수락"),
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        Get.back();
+                      onPressed: () async {
+                        await mariaDB_server().event_list_delete(_psrl_data["postId"]);
+                        Get.off(event_list());
                       },
                       child: Text("거절"),
                     )

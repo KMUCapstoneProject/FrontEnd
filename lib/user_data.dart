@@ -1,4 +1,6 @@
 
+import 'package:project_2/Server_conn/mariaDB_server.dart';
+
 class user_data{
   static final user_data _instance = user_data._internal();
   factory user_data(){
@@ -19,7 +21,7 @@ class user_data{
     _login_check = true;
   }
 
-  void reset_login_data()
+  void reset_login_data ()
   {
     _user_nickname = "";
     _user_email = "";
@@ -32,5 +34,8 @@ class user_data{
   String get_email() => _user_email;
   String get_roles() => _user_roles;
 
-
+  void test_test(bool test)
+  {
+    _login_check = true;
+  }
 }

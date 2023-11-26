@@ -18,7 +18,7 @@
     "elementType": "labels.text",
     "stylers": [
       {
-        "visibility": "simplified"
+        "visibility": "off"
       }
     ]
   }

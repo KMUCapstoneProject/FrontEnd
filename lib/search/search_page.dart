@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_2/Building_map/Building_data.dart';
 import 'package:project_2/road/road_data.dart';
+import 'package:get/get.dart';
 
 class Search_page extends SearchDelegate {
   building_data data = building_data();
@@ -53,9 +54,7 @@ class Search_page extends SearchDelegate {
           onTap: () {
             query = suggestion;
             showResults(context);
-            print(query);
-            road_data().reset_road();
-            //road_data().input_road(query);
+            Get.back(result: query);
           },
         );
       },

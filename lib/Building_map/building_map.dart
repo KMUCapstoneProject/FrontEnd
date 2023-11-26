@@ -20,6 +20,20 @@ class _swiper_test2State extends State<swiper_test2> {
 
   building_data tes = building_data();
 
+  var titlelist = [
+    "test",
+    "test1",
+    "test2",
+    "test3",
+    "test4",
+    "test5",
+    "test6",
+    "test7",
+    "test8",
+    "test9",
+    "test10",
+  ];
+
   @override
   Widget build(BuildContext context) {
     List<String> test_st = tes.make_building(Get.arguments);
@@ -66,7 +80,7 @@ class _swiper_test2State extends State<swiper_test2> {
               ).toList(),
             ),
             SizedBox(
-              height: 300,
+              height: 350,
               child: Row(
                 children: [
                   Column(
@@ -96,10 +110,7 @@ class _swiper_test2State extends State<swiper_test2> {
                         ),
                     ],
                   ),
-                  Text("data"),
-                  Text("data"),
-                  Text("data"),
-                  Text("data"),
+                  null_room(),
                 ],
               ),
             ),
@@ -127,98 +138,45 @@ class _swiper_test2State extends State<swiper_test2> {
     return "images/kmu_1.png";
   }
 
-}
 
-
-/*
-class swiper_test extends StatefulWidget {
-  const swiper_test({super.key});
-
-  @override
-  State<swiper_test> createState() => _swiper_testState();
-}
-
-class _swiper_testState extends State<swiper_test> {
-  int _currentIndex = 0;
-  int _selectedFloor = 1;
-  CarouselController _carouselController = CarouselController();
-
-  List<int> test_ls = [1, 2, 3, 4, 5];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(Get.arguments),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            CarouselSlider(
-              carouselController: _carouselController,
-              options: CarouselOptions(
-                height: 400.0,
-                onPageChanged: (index, reason) {
-                  setState(
-                    () {
-                      _currentIndex = index;
-                    },
-                  );
-                },
-              ),
-              items: [1, 2, 3, 4, 5].map(
-                (i) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        margin: EdgeInsets.symmetric(horizontal: 10.0),
-                        decoration: BoxDecoration(
-                          color:
-                              _selectedFloor == i ? Colors.blue : Colors.amber,
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Image $i',
-                            style: TextStyle(fontSize: 16.0),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ).toList(),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (int i = 1; i <= 5; i++)
-                  Expanded(
-                    flex: 1,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedFloor = i;
-                        });
-                        _carouselController.animateToPage(i - 1);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            _selectedFloor == i ? Colors.green : Colors.blue,
-                      ),
-                      child: Text(
-                        '이미지 $i',
-                        style: TextStyle(fontSize: 11),
-                      ),
-                    ),
+  Widget null_room() {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.8,
+      height: MediaQuery.of(context).size.height,
+      child: ListView.builder(
+        itemCount: titlelist.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: (){},
+            child: Card(
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: Image.asset("images/kmu_1.png"),
                   ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Text(
+                          titlelist[index],
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-            Text('현재 이미지: ${_currentIndex + 1}'),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 }
-*/
