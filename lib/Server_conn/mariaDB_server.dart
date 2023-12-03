@@ -260,12 +260,9 @@ class mariaDB_server {
   }
 
   Future<void> room(String name) async {
-    String apiJoin = "공1";
-    String jsonApiJoin = jsonEncode(apiJoin);
-
     try {
       Response response =
-      await dio!.get("${this.url}api/timetable/findClassinBuilding",data: jsonApiJoin );
+      await dio!.get("${this.url}api/timetable/findClassinBuilding?building=공1");
       if (response.statusCode == 200||response.statusCode == 201) {
         print(response.data["data"]);
       }
