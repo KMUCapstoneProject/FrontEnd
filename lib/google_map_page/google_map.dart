@@ -69,7 +69,27 @@ class _kmu_mapState extends State<kmu_map> {
         ),
         centerTitle: true,
         automaticallyImplyLeading: false,
-        actions: [],
+        actions: [
+          Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    setState(
+                      () {
+                        road_data().reset_road();
+                        _successMessage(context);
+                      },
+                    );
+                  },
+                  icon: Icon(Icons.change_circle_outlined),
+                )
+              ],
+            ),
+          ),
+        ],
         flexibleSpace: ClipPath(
           child: Container(
             height: 150,
@@ -87,7 +107,10 @@ class _kmu_mapState extends State<kmu_map> {
       ),
       //길 안내 버튼
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.navigation),
+        child: Icon(
+          Icons.navigation,
+        ),
+        backgroundColor: Colors.blue,
         onPressed: () async {
           final data = await Get.to(search_start_page());
           setState(() {
@@ -109,6 +132,11 @@ class _kmu_mapState extends State<kmu_map> {
         stream: Geolocator.getPositionStream(), // 현재 GPS위치를 받아옴
         builder: (context, snapshot) {
           //GPS가 원안에 들어 오면 원이 사라지는 코드
+          if (snapshot.hasData) {
+            final now_location = snapshot.data!;
+            road_data().input_now_location(
+                now_location.latitude, now_location.longitude);
+          }
           if (snapshot.hasData && road_data().get_latlng().isNotEmpty) {
             final start = snapshot.data!; //실시간 GPS 좌표
             final end = road_data().get_latlng()[0];
@@ -133,22 +161,6 @@ class _kmu_mapState extends State<kmu_map> {
                   height: 100,
                   width: 200,
                   offset: 35,
-                ),
-                Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            road_data().reset_road();
-                          });
-                        },
-                        child: Text("reset"),
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),
@@ -296,6 +308,20 @@ class _kmu_mapState extends State<kmu_map> {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  _successMessage(BuildContext context) {
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 1),
+        backgroundColor: Colors.white,
+        content: Container(
+          width: MediaQuery.of(context).size.width * 0.7,
+          height: 40,
+          color: Colors.cyanAccent,
         ),
       ),
     );

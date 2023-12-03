@@ -68,7 +68,7 @@ class _swiper_test2State extends State<swiper_test2> {
                         decoration: BoxDecoration(
                           color: _currentIndex == test_st.indexOf(i)
                               ? Colors.blue
-                              : Colors.amber,
+                              : Colors.green,
                         ),
                         child: Center(
                           child: Image.asset(img_building(Get.arguments, test_st.indexOf(i))),

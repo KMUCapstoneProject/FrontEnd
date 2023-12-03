@@ -108,7 +108,12 @@ class _event_registrationState extends State<event_registration> {
     selectedTime.then((value) {
       if (value != null) {
         setState(() {
-          startTime = "${value.hour}:${value.minute}";
+          if (value.minute < 10) {
+            String minute = "0${value.minute}";
+            startTime = "${value.hour}:${minute}";
+          } else {
+            startTime = "${value.hour}:${value.minute}";
+          }
         });
       }
     });
@@ -121,20 +126,30 @@ class _event_registrationState extends State<event_registration> {
       context: context,
       initialTime: TimeOfDay.now(),
     );
-    selectedTime.then((value) {
-      if (value != null) {
-        setState(() {
-          endTime = "${value.hour}:${value.minute}";
-        });
-      }
-    });
+    selectedTime.then(
+      (value) {
+        if (value != null) {
+          setState(
+            () {
+              if (value.minute < 10) {
+                String minute = "0${value.minute}";
+                endTime = "${value.hour}:${minute}";
+              } else {
+                endTime = "${value.hour}:${value.minute}";
+              }
+            },
+          );
+        }
+      },
+    );
   }
 
   // 앱바에 완료버튼을 누르면 이제 내용을 서버에 전송
   upload() async {
     String start = "$startDate $startTime:00";
     String end = "$endDate $endTime:00";
-    await mariaDB_server().event_registration_input(1, title_ctr.text,content_ctr.text, start, end, Lat, Lng, locaton_ctr.text);
+    await mariaDB_server().event_registration_input(1, title_ctr.text,
+        content_ctr.text, start, end, Lat, Lng, locaton_ctr.text);
     Get.back();
   }
 

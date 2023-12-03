@@ -8,6 +8,7 @@ class road_data {
   final List<Polyline> _road_line = <Polyline>[];
   final List<Circle> _circles = <Circle>[];
   final List<LatLng> test_test = <LatLng>[];
+  LatLng _now_location = LatLng(0.0, 0.0);
 
   static final road_data _instance = road_data._internal();
 
@@ -17,14 +18,17 @@ class road_data {
 
   road_data._internal() {}
 
-  void input_road(String building_start,String building_end) {
-
-    if(building_start == "현재위치")
-      {
-        //서버에 현재 위치 넣어주기
-      }
-    LatLng data_start = building_data().building_change_latlang(building_start);
-    LatLng data_end = building_data().building_change_latlang(building_end);
+  void input_road(String building_start, String building_end) {
+    LatLng data_start;
+    LatLng data_end;
+    if (building_start == "현재위치") {
+      //서버에 현재 위치 넣어주기
+      data_start = _now_location;
+      data_end = building_data().building_change_latlang(building_end);
+    } else {
+      data_start = building_data().building_change_latlang(building_start);
+      data_end = building_data().building_change_latlang(building_end);
+    }
     test_test.add(data_end);
     /*if (_circles.isEmpty!) {
       reset_road();
@@ -51,6 +55,7 @@ class road_data {
       ),
     );
   }
+
   void input_road2(String building) {
     LatLng data = building_data().building_change_latlang(building);
     test_test.add(data);
@@ -91,10 +96,15 @@ class road_data {
 
   List<LatLng> get_latlng() => test_test;
 
-
   void reset_road() {
     _road_line.clear();
     _circles.clear();
     test_test.clear();
   }
+
+  void input_now_location(double lat, double log) {
+    _now_location = LatLng(lat, log);
+  }
+
+  LatLng get_now_test() => _now_location;
 }

@@ -39,6 +39,7 @@ class mariaDB_server {
     } catch (e) {
       if (e is DioException) {
         print('Bad Request: ${e.response!.data}');
+        return {};
       }
     }
     try {
@@ -125,7 +126,7 @@ class mariaDB_server {
     try {
       Response response =
       await dio!.get("${this.url}api/posting/list?categoryId=1");
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         print('Success: ${response.data}');
         return response.data;
       }
@@ -142,7 +143,7 @@ class mariaDB_server {
     try {
       Response response =
       await dio!.get("${this.url}api/posting/list?categoryId=2");
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         print('Success: ${response.data}');
         return response.data;
       }
@@ -154,12 +155,12 @@ class mariaDB_server {
     return <dynamic>[];
   }
 
-  //빈 강의실 정보 받기기
+  //빈 강의실 정보 받기
   Future<void> find_room(String building_name) async {
     try {
       Response response =
       await dio!.get("${this.url}api/timetable/findRoominBuilding?building=공1");
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         print('Success: ${response.data}');
       }
       print("object");
@@ -215,6 +216,68 @@ class mariaDB_server {
       }
     }
   }
+
+  //메세지 보내기
+  Future<bool> messges_input(String title,String content,String receiverName) async {
+    Map<String, dynamic> apiJoin = {
+      "title" : title,
+      "content" : content,
+      "receiverName" :  receiverName,
+    };
+    String jsonApiJoin = jsonEncode(apiJoin);
+
+    try {
+      Response response =
+      await dio!.post("${this.url}messages",data: jsonApiJoin);
+      if (response.statusCode == 201) {
+        print(response.data);
+      }
+      return true;
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+      return false;
+    }
+  }
+
+  //메세지 받기
+  Future<List<dynamic>> messges_output() async {
+
+    try {
+      Response response =
+      await dio!.get("${this.url}messages/sent");
+      if (response.statusCode == 200||response.statusCode == 201) {
+        print(response.data["data"]);
+      }
+      return response.data["data"];
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+      return <dynamic>[];
+    }
+  }
+
+  Future<void> room(String name) async {
+    String apiJoin = "공1";
+    String jsonApiJoin = jsonEncode(apiJoin);
+
+    try {
+      Response response =
+      await dio!.get("${this.url}api/timetable/findClassinBuilding",data: jsonApiJoin );
+      if (response.statusCode == 200||response.statusCode == 201) {
+        print(response.data["data"]);
+      }
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+    }
+  }
+
+
+
 /*
  Future<void> fetchData() async {
     try {

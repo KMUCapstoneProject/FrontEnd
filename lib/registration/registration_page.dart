@@ -102,7 +102,15 @@ class _registration_pageState extends State<registration_page> {
     selectedTime.then((value) {
       if (value != null) {
         setState(() {
-          startTime = "${value.hour}:${value.minute}";
+          if(value.minute<10)
+          {
+            String minute = "0${value.minute}";
+            startTime = "${value.hour}:${minute}";
+          }
+          else
+          {
+            startTime = "${value.hour}:${value.minute}";
+          }
         });
       }
     });
@@ -118,7 +126,15 @@ class _registration_pageState extends State<registration_page> {
     selectedTime.then((value) {
       if (value != null) {
         setState(() {
-          endTime = "${value.hour}:${value.minute}";
+          if(value.minute<10)
+          {
+            String minute = "0${value.minute}";
+            endTime = "${value.hour}:${minute}";
+          }
+          else
+          {
+            endTime = "${value.hour}:${value.minute}";
+          }
         });
       }
     });

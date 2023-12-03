@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:project_2/drawer/error_list.dart';
 import 'package:project_2/drawer/event_list.dart';
 import 'package:project_2/registration/event_registration_page.dart';
 import 'package:project_2/registration/event_screen_page.dart';
@@ -36,7 +37,19 @@ class _drawer_pageState extends State<drawer_page> {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text("nickname : ${user_data().get_nickname()}"),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.blue,
+                  Colors.green,
+                ],
+              ),
+              borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(40.0),
+                bottomLeft: Radius.circular(40.0),
+              ),
+            ),
+            accountName: Text("닉네임 : ${user_data().get_nickname()}"),
             accountEmail: Text("email : ${user_data().get_email()}"),
           ),
           ListTile(
@@ -94,8 +107,10 @@ class _drawer_pageState extends State<drawer_page> {
               Icons.find_in_page_rounded,
               color: Colors.grey[850],
             ),
-            title: Text("오류 수신함"),
-            onTap: () {},
+            title: Text("민원함"),
+            onTap: () {
+              Get.to(Error_list());
+            },
           )
         ],
       ),
@@ -108,7 +123,19 @@ class _drawer_pageState extends State<drawer_page> {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text("nickname : ${user_data().get_nickname()}"),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.blue,
+                  Colors.green,
+                ],
+              ),
+              borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(40.0),
+                bottomLeft: Radius.circular(40.0),
+              ),
+            ),
+            accountName: Text("닉네임 : ${user_data().get_nickname()}"),
             accountEmail: Text("email : ${user_data().get_email()}"),
           ),
           ListTile(
@@ -152,7 +179,19 @@ class _drawer_pageState extends State<drawer_page> {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text("nickname : ${user_data().get_nickname()}"),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.blue,
+                  Colors.green,
+                ],
+              ),
+              borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(40.0),
+                bottomLeft: Radius.circular(40.0),
+              ),
+            ),
+            accountName: Text("닉네임 : ${user_data().get_nickname()}"),
             accountEmail: Text("email : ${user_data().get_email()}"),
           ),
           ListTile(

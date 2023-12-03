@@ -15,6 +15,7 @@ class _member_makeState extends State<member_make> {
   TextEditingController name = TextEditingController();
   TextEditingController paword = TextEditingController();
 
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

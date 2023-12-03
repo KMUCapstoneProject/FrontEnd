@@ -49,7 +49,7 @@ class _login_pageState extends State<login_page> {
                       children: [
                         TextField(
                           controller: email,
-                          decoration: InputDecoration(labelText: 'Eamil'),
+                          decoration: InputDecoration(labelText: 'Email'),
                           keyboardType: TextInputType.emailAddress,
                         ),
                         TextField(
@@ -114,22 +114,22 @@ class _login_pageState extends State<login_page> {
 
   void showPopup() {
     showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            child: Container(
-                width: MediaQuery.of(context).size.width * 0.3,
-                height: 100,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white),
-                child: Center(
-                  child: Text(
-                    "로그인 실패",
-                    style: TextStyle(fontSize: 30),
-                  ),
-                )),
-          );
-        });
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Container(
+              width: MediaQuery.of(context).size.width * 0.3,
+              height: 100,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10), color: Colors.white),
+              child: Center(
+                child: Text(
+                  "로그인 실패",
+                  style: TextStyle(fontSize: 30),
+                ),
+              )),
+        );
+      },
+    );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:project_2/Server_conn/mariaDB_server.dart';
 
 class Inquiry extends StatefulWidget {
   const Inquiry({super.key});
@@ -12,6 +13,13 @@ class _InquiryState extends State<Inquiry> {
   final valueList = ['시스템 문제 보고', '길 찾기 문제 보고', '질문', '요청'];
   String select = "";
 
+  //email 컨트롤러
+  TextEditingController receiverName_ctr = TextEditingController();
+  //제목 컨트롤러
+  TextEditingController title_ctr = TextEditingController();
+  //내용 컨트롤러
+  TextEditingController content_ctr = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -20,7 +28,17 @@ class _InquiryState extends State<Inquiry> {
     });
   }
 
-  upload() async {}
+  upload() async {
+    bool check = await mariaDB_server().messges_input(title_ctr.text, content_ctr.text, receiverName_ctr.text);
+    if(check)
+      {
+        Get.back();
+      }
+    else
+      {
+        showPopup();
+      }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +77,7 @@ class _InquiryState extends State<Inquiry> {
               ),
             ),
             TextField(
+              controller: receiverName_ctr,
               decoration: InputDecoration(
                 hintText: '이메일을 입력하세요',
                 hintStyle: TextStyle(color: Colors.grey[400]),
@@ -92,6 +111,7 @@ class _InquiryState extends State<Inquiry> {
                   style: TextStyle(fontSize: 15),
                 )),
             TextField(
+              controller: title_ctr,
               decoration: InputDecoration(
                 hintText: '제목을 입력하세요',
                 hintStyle: TextStyle(color: Colors.grey[400]),
@@ -107,6 +127,7 @@ class _InquiryState extends State<Inquiry> {
                   style: TextStyle(fontSize: 15),
                 )),
             TextField(
+              controller: content_ctr,
               maxLines: 10,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
@@ -138,4 +159,27 @@ class _InquiryState extends State<Inquiry> {
       ),
     );
   }
+
+  void showPopup() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Container(
+              width: MediaQuery.of(context).size.width * 0.3,
+              height: 100,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10), color: Colors.white),
+              child: Center(
+                child: Text(
+                  "로그인 실패",
+                  style: TextStyle(fontSize: 30),
+                ),
+              )),
+        );
+      },
+    );
+  }
+
+
 }

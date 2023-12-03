@@ -15,11 +15,11 @@ class building_data {
 
   CustomInfoWindowController _customInfoWindowController =
   CustomInfoWindowController();
-  final List<LatLng> _LatLang = <LatLng>[];
-  final List<String> _buildingName = <String>[];
-  final List<int> _floors_low = <int>[];
-  final List<int> _floors_height = <int>[];
-
+  final List<LatLng> _LatLang = <LatLng>[];       //좌표
+  final List<String> _buildingName = <String>[];  //빌딩이름
+  final List<int> _floors_low = <int>[];          //최저층
+  final List<int> _floors_height = <int>[];       //최고층
+  final List<String> _Name = <String>[];          //빈강의실 검색이름
   /// Marker정보를 추가하는 함수.
   ///
   /// latLng와 이름, 층, 최대 층수를 순서대로 입력한다.
@@ -41,6 +41,16 @@ class building_data {
     addMarker(LatLng(35.856725, 128.489863), "행소박물관", -1,2);
     addMarker(LatLng(35.855549, 128.487740), "전산교육원", -1,2);
     addMarker(LatLng(35.855308, 128.485636), "봉경관", 0,4);
+    addMarker(LatLng(35.854117, 128.484146), "영암관", 0,4);
+    addMarker(LatLng(35.856313, 128.484960), "의양관", 0,4);
+    addMarker(LatLng(35.856512, 128.483703), "스미스관", 0,4);
+    addMarker(LatLng(35.853826, 128.482374), "백은관", 0,4);
+    addMarker(LatLng(35.855009, 128.491564), "산학협력단", 0,4);
+    addMarker(LatLng(35.854225, 128.486109), "구바우어관", 0,4);
+    addMarker(LatLng(35.853881, 128.485479), "신바우어관", 0,4);
+    addMarker(LatLng(35.853726, 128.486620), "취업진로센터", 0,2);
+    addMarker(LatLng(35.854465, 128.489981), "계명대학교체육관", 0,1);
+    addMarker(LatLng(35.858000, 128.484450), "아담스채플", -1,1);
   }
 
 

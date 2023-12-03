@@ -14,32 +14,44 @@ class _start_pageState extends State<start_page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: Image.asset("images/kmu_rm_b2.png",
-                width: 350, height: 250, fit: BoxFit.fill),
-          ),
-          SizedBox(
-            height: 50,
-            child: Text(
-              "계명여지도",
-              style: TextStyle(
-                  fontSize: 40,
-                  color: Colors.blue,
-                  fontFamily: 'notosanscjkkr'),
+      body: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: Image.asset(
+                "images/그림1.png",
+                width: 450,
+                height: 360,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          Center(
-            child: ElevatedButton(
-              onPressed: () {
-                Get.off(kmu_map());
-              },
-              child: Text("시작"),
+            SizedBox(
+              height: 50,
+              child: Text(
+                "계명여지도",
+                style: TextStyle(
+                    fontSize: 40,
+                    color: Colors.blue,
+                    fontFamily: 'notosanscjkkr'),
+              ),
             ),
-          )
-        ],
+            SizedBox(
+              height: 40,
+            ),
+            Center(
+              child: FloatingActionButton(
+                onPressed: () {
+                  Get.to(kmu_map());
+                },
+                child: Icon(
+                  Icons.arrow_forward,
+                  size: 35,
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
