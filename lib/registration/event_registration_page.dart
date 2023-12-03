@@ -36,8 +36,7 @@ class _event_registrationState extends State<event_registration> {
   String endDate = "마감 날짜";
   String startTime = "시작 시간";
   String endTime = "마감 시간";
-
-  // 이미지를 선택해서 리스트에 저장하는 함수
+// 이미지를 선택해서 리스트에 저장하는 함수
   Future<void> _pickImage() async {
     final List<XFile> images = await ImagePicker().pickMultiImage();
     setState(() {
@@ -108,12 +107,7 @@ class _event_registrationState extends State<event_registration> {
     selectedTime.then((value) {
       if (value != null) {
         setState(() {
-          if (value.minute < 10) {
-            String minute = "0${value.minute}";
-            startTime = "${value.hour}:${minute}";
-          } else {
-            startTime = "${value.hour}:${value.minute}";
-          }
+          startTime = "${value.hour}:${value.minute}";
         });
       }
     });
@@ -126,35 +120,19 @@ class _event_registrationState extends State<event_registration> {
       context: context,
       initialTime: TimeOfDay.now(),
     );
-    selectedTime.then(
-      (value) {
-        if (value != null) {
-          setState(
-            () {
-              if (value.minute < 10) {
-                String minute = "0${value.minute}";
-                endTime = "${value.hour}:${minute}";
-              } else {
-                endTime = "${value.hour}:${value.minute}";
-              }
-            },
-          );
-        }
-      },
-    );
+    selectedTime.then((value) {
+      if (value != null) {
+        setState(() {
+          endTime = "${value.hour}:${value.minute}";
+        });
+      }
+    });
   }
-
   // 앱바에 완료버튼을 누르면 이제 내용을 서버에 전송
   upload() async {
     String start = "$startDate $startTime:00";
     String end = "$endDate $endTime:00";
-    await mariaDB_server().event_registration_input(1, title_ctr.text,
-        content_ctr.text, start, end, Lat, Lng, locaton_ctr.text);
-    Get.back();
-  }
-
-  // 앱바에 아이콘을 누르면 비교과프로그램 등록 이전 화면으로 이동
-  backScrean() async {
+    await mariaDB_server().event_registration_input(1, title_ctr.text,content_ctr.text, start, end, Lat, Lng, locaton_ctr.text);
     Get.back();
   }
 
@@ -162,7 +140,7 @@ class _event_registrationState extends State<event_registration> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("행사신청"),
+        title: const Text('행사신청'),
         actions: [
           Container(
             padding: const EdgeInsets.all(10),
@@ -182,200 +160,156 @@ class _event_registrationState extends State<event_registration> {
           FocusScope.of(context).unfocus();
         },
         child: SingleChildScrollView(
-          //스크롤 할수있게하는 위젯
           child: Column(
             children: [
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              Container(
+                margin: const EdgeInsets.only(top: 20),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // 시작 날짜 부분
                     Flexible(
-                      flex: 4,
+                      flex: 5,
                       child: Container(
-                        decoration: BoxDecoration(border: Border.all(width: 1)),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 10,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    border:
-                                        Border(right: BorderSide(width: 1))),
-                                child: IconButton(
-                                  onPressed: setStartData,
-                                  icon: const Icon(Icons.date_range_outlined),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 25,
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.only(left: 15, right: 15),
-                                child: SizedBox(
-                                  width: 105,
-                                  height: 50,
-                                  child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: Text(
-                                      startDate,
-                                    ),
+                        margin: const EdgeInsets.only(left: 5, right: 10),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                          ),
+                          onPressed: setStartData,
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(right: 20),
+                                  child: const Icon(
+                                    Icons.date_range_outlined,
+                                    color: Colors.black,
                                   ),
                                 ),
-                              ),
-                            )
-                          ],
+                                Text(
+                                  startDate,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                    const Text(
-                      '~',
-                      style: TextStyle(fontSize: 23),
-                    ),
-                    // 마감 날짜 부분
                     Flexible(
-                      flex: 4,
+                      flex: 5,
                       child: Container(
-                        decoration: BoxDecoration(border: Border.all(width: 1)),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 10,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    border:
-                                        Border(right: BorderSide(width: 1))),
-                                child: IconButton(
-                                  onPressed: setEndData,
-                                  icon: const Icon(Icons.date_range_outlined),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 25,
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.only(left: 15, right: 15),
-                                child: SizedBox(
-                                  width: 105,
-                                  height: 50,
-                                  child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: Text(
-                                      endDate,
-                                    ),
+                        margin: const EdgeInsets.only(left: 5, right: 10),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                          ),
+                          onPressed: setStartTime,
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                    margin: const EdgeInsets.only(right: 20),
+                                    child: const Icon(
+                                      Icons.access_time_sharp,
+                                      color: Colors.black,
+                                    )),
+                                Text(
+                                  startTime,
+                                  style: const TextStyle(
+                                    color: Colors.black,
                                   ),
-                                ),
-                              ),
-                            )
-                          ],
+                                )
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // 시작 시간 부분
-                    Flexible(
-                      flex: 4,
-                      child: Container(
-                        decoration: BoxDecoration(border: Border.all(width: 1)),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 10,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    border:
-                                        Border(right: BorderSide(width: 1))),
-                                child: IconButton(
-                                  onPressed: setStartTime,
-                                  icon: const Icon(Icons.access_time_sharp),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 25,
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.only(left: 15, right: 15),
-                                child: SizedBox(
-                                  width: 105,
-                                  height: 50,
-                                  child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: Text(
-                                      startTime,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    const Text(
-                      '~',
-                      style: TextStyle(fontSize: 23),
-                    ),
-                    // 마감 시간 부분
-                    Flexible(
-                      flex: 4,
-                      child: Container(
-                        decoration: BoxDecoration(border: Border.all(width: 1)),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 10,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    border:
-                                        Border(right: BorderSide(width: 1))),
-                                child: IconButton(
-                                  onPressed: setEndTime,
-                                  icon: const Icon(Icons.access_time_sharp),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 25,
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.only(left: 15, right: 15),
-                                child: SizedBox(
-                                  width: 105,
-                                  height: 50,
-                                  child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: Text(
-                                      endTime,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                    )
                   ],
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(10),
-                height: 60,
+                margin: const EdgeInsets.only(top: 10),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      flex: 5,
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 5, right: 10),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                          ),
+                          onPressed: setEndData,
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(right: 20),
+                                  child: const Icon(
+                                    Icons.date_range_outlined,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Text(
+                                  endDate,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 5,
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 5, right: 10),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                          ),
+                          onPressed: setEndTime,
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                    margin: const EdgeInsets.only(right: 20),
+                                    child: const Icon(
+                                      Icons.access_time_sharp,
+                                      color: Colors.black,
+                                    )),
+                                Text(
+                                  endTime,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
                       onPressed: () async {
@@ -385,32 +319,32 @@ class _event_registrationState extends State<event_registration> {
                           Lng = double.parse(data.longitude.toStringAsFixed(5));
                         });
                       },
-                      child: Text("위치"),
-                    ),
-                    SizedBox(
-                      width: 10,
+                      child: const Text('위치'),
                     ),
                     Container(
+                      margin: const EdgeInsets.only(left: 10),
                       width: 250,
                       height: 35,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                      ),
                       child: Container(
-                        padding: EdgeInsets.only(bottom: 2, left: 2, right: 2),
+                        padding:
+                        const EdgeInsets.only(bottom: 2, left: 2, right: 2),
                         child: TextField(
                           controller: locaton_ctr,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: '정확한 위치를 입력하시오',
                           ),
                         ),
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(
-                height: 200,
+              Container(
+                margin: const EdgeInsets.only(right: 10, left: 10),
+                height: 180,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: imageFiles.length + 1,
@@ -421,8 +355,8 @@ class _event_registrationState extends State<event_registration> {
                       return GestureDetector(
                         onTap: _pickImage,
                         child: Container(
-                          width: 200,
-                          height: 200,
+                          width: 180,
+                          height: 180,
                           decoration: BoxDecoration(
                               color: Colors.grey,
                               borderRadius: BorderRadius.circular(20)),
@@ -437,13 +371,19 @@ class _event_registrationState extends State<event_registration> {
                       return Stack(
                         children: [
                           // 이미지 상자 테두리에 굴곡을 만들기 위해 ClipRRect사용
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.file(
-                              File(imageFiles[index].path),
-                              width: 200,
-                              height: 200,
-                              fit: BoxFit.cover,
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.file(
+                                File(imageFiles[index].path),
+                                width: 180,
+                                height: 180,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           // 이미지 좌표 위에 버븐 생성
@@ -470,25 +410,38 @@ class _event_registrationState extends State<event_registration> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 15,
-              ),
-              TextField(
-                controller: title_ctr,
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.w600,
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: TextField(
+                  controller: title_ctr,
+                  style: const TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: '제목을 입력하세요(필수)',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
                 ),
-                decoration: InputDecoration(hintText: '제목을 입력하세요(필수)'),
               ),
-              TextField(
-                controller: content_ctr,
-                maxLines: 1000,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: TextField(
+                  controller: content_ctr,
+                  maxLines: 20,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: '본문을 입력하세요',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
                 ),
-                decoration: InputDecoration(hintText: '본문을 입력하세요'),
               ),
             ],
           ),
