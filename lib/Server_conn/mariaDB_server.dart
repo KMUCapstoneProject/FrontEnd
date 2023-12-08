@@ -2,7 +2,11 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:project_2/Server_conn/neo4j_server.dart';
 import 'package:project_2/user_data.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class mariaDB_server {
   static final mariaDB_server _instance = mariaDB_server._internal();
@@ -45,10 +49,6 @@ class mariaDB_server {
     try {
       Response response =
       await dio!.get("${this.url}api/info");
-      //print("${response.data}");
-      //print("${response.data["nickname"].toString()}");
-      //print("${response.data["email"].toString()}");
-      //print("${response.data["roles"].toString()}");
       return response.data;
     } catch (e) {
       return {};
@@ -94,7 +94,7 @@ class mariaDB_server {
   }
 
   //비교과 및 행사 신청서 보내기
-  Future<void> event_registration_input(int category,String title, String content,String start,String end, double lat, double log,String details) async {
+  Future<void> event_registration_input(int category,String title, String content,String start,String end, double lat, double log,String details,List<XFile> image) async {
 
     Map<String, dynamic> apiJoin = {
       "categoryId" :  category,
@@ -119,6 +119,8 @@ class mariaDB_server {
         print('Bad Request: ${e.response!.data}');
       }
     }
+
+    image_input(image);
   }
 
   //신청완료 행사 받기
@@ -156,18 +158,18 @@ class mariaDB_server {
   }
 
   //빈 강의실 정보 받기
-  Future<void> find_room(String building_name) async {
+  Future<List<dynamic>> find_room(String building_name) async {
     try {
       Response response =
-      await dio!.get("${this.url}api/timetable/findRoominBuilding?building=공1");
-      if (response.statusCode == 200) {
-        print('Success: ${response.data}');
-      }
-      print("object");
+      await dio!.get("${this.url}api/timetable/findClassinBuilding?building=$building_name");
+      List<dynamic> test = response.data;
+      test.sort((a, b) => a['classNum']!.compareTo(b['classNum']!));
+      return test;
     } catch (e) {
       if (e is DioException) {
         print('Bad Request: ${e.response!.data}');
       }
+      return <dynamic>[];
     }
   }
 
@@ -259,13 +261,18 @@ class mariaDB_server {
     }
   }
 
-  Future<void> room(String name) async {
+  //image 디비 넣기
+  Future<void> image_input(List<XFile> image) async {
+    List<XFile> _pickedImgs = image;
+    final List<MultipartFile> _files = _pickedImgs.map((img) => MultipartFile.fromFileSync(img.path,  contentType: new MediaType("image", "png"))).toList();
+
+    final formData = FormData.fromMap({
+      'file': _files,
+    });
+
     try {
       Response response =
-      await dio!.get("${this.url}api/timetable/findClassinBuilding?building=공1");
-      if (response.statusCode == 200||response.statusCode == 201) {
-        print(response.data["data"]);
-      }
+      await dio!.post("${this.url}uploadFile",data: formData);
     } catch (e) {
       if (e is DioException) {
         print('Bad Request: ${e.response!.data}');
@@ -273,46 +280,57 @@ class mariaDB_server {
     }
   }
 
-
-
-/*
- Future<void> fetchData() async {
+  Future<String> building_load_search(String start, String end) async {
     try {
-      // 예를 들어, 로그인 후 데이터를 가져올 때
-      final getDataResponse = await dio.get("https://example.com/api/data");
-
-      print("Data Response: ${getDataResponse.data}");
+      Response response =
+      await dio!.get("${this.url}location/find?start_name=${start}&end_name=${end}");
+      return response.data;
     } catch (e) {
-      print("Fetch data error: $e");
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+      return "";
     }
   }
 
-  Future<void> login_true(String username, String password) async {
-    String uri = "https://dbp.kdedevelop.com/api/login";
-    String uri_g = "https://dbp.kdedevelop.com/";
-    final formData = FormData.fromMap({
-      'account': 'E00012',
-      'password': 'password',
-    });
+  Future<String> building_load_search_a(String start, String end) async {
+    try {
+      Response response =
+      await dio!.get("${this.url}location/find_A?start_name=${start}&end_name=${end}");
+      return response.data;
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+      return "";
+    }
+  }
 
-    final response = await dio.post(
-        uri,
-        data: formData
-    );
+  Future<String> curr_load_search(LatLng start, String end) async {
+    try {
+      Response response =
+      await dio!.get("${this.url}location/findMe?start_position=현재위치&start_pos_latitude=${start.latitude}&start_pos_longitude=${start.longitude}&end_name=${end}");
+      return response.data;
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+      return "";
+    }
+  }
 
-    List<Cookie> results = await cookieJar.loadForRequest(Uri.parse('https://dbp.kdedevelop.com/'));
-    print(results);
+  Future<String> curr_load_search_a(LatLng start, String end) async {
+    try {
+      Response response =
+      await dio!.get("${this.url}location/findMe_A?start_position=현재위치&start_pos_latitude=${start.latitude}&start_pos_longitude=${start.longitude}&end_name=${end}");
+      return response.data;
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+      return "";
+    }
+  }
 
-    print("LOGIN CODE : ${response.statusCode}");
 
-    print("READY");
-
-    String infoUri = "https://dbp.kdedevelop.com/api/employee";
-    final infoResponse = await dio.get(
-        infoUri
-    );
-
-    print("Code : " + infoResponse.statusCode.toString());
-    print("RESPONSE DATA : ${infoResponse.data}");
-  }*/
 }

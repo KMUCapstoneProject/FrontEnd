@@ -99,7 +99,11 @@ class _registration_pageState extends State<registration_page> {
     selectedTime.then((value) {
       if (value != null) {
         setState(() {
-          startTime = "${value.hour}:${value.minute}";
+          if (value.minute < 10) {
+            startTime = "${value.hour}:0${value.minute}";
+          } else {
+            startTime = "${value.hour}:${value.minute}";
+          }
         });
       }
     });
@@ -115,7 +119,11 @@ class _registration_pageState extends State<registration_page> {
     selectedTime.then((value) {
       if (value != null) {
         setState(() {
-          endTime = "${value.hour}:${value.minute}";
+          if (value.minute < 10) {
+            endTime = "${value.hour}:0${value.minute}";
+          } else {
+            endTime = "${value.hour}:${value.minute}";
+          }
         });
       }
     });
@@ -124,7 +132,7 @@ class _registration_pageState extends State<registration_page> {
   upload() async {
     String start = "$startDate $startTime:00";
     String end = "$endDate $endTime:00";
-    await mariaDB_server().event_registration_input(2, title_ctr.text, content_ctr.text, start, end, 0.0, 0.0, locaton_ctr.text);
+    await mariaDB_server().event_registration_input(2, title_ctr.text, content_ctr.text, start, end, 0.0, 0.0, locaton_ctr.text,imageFiles);
     Get.back();
   }
 
@@ -151,7 +159,9 @@ class _registration_pageState extends State<registration_page> {
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18))),
               ),
-              onPressed: () {},
+              onPressed: () {
+                upload();
+                },
               child: const Text('완료'),
             ),
           ),
@@ -182,18 +192,24 @@ class _registration_pageState extends State<registration_page> {
                             padding: const EdgeInsets.all(10),
                             child: Row(
                               children: [
-                                Container(
-                                  margin: const EdgeInsets.only(right: 20),
-                                  child: const Icon(
-                                    Icons.date_range_outlined,
-                                    color: Colors.black,
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(right: 20),
+                                    child: const Icon(
+                                      Icons.date_range_outlined,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  startDate,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.black,
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    startDate,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 )
                               ],
@@ -255,17 +271,23 @@ class _registration_pageState extends State<registration_page> {
                             padding: const EdgeInsets.all(10),
                             child: Row(
                               children: [
-                                Container(
-                                  margin: const EdgeInsets.only(right: 20),
-                                  child: const Icon(
-                                    Icons.date_range_outlined,
-                                    color: Colors.black,
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(right: 20),
+                                    child: const Icon(
+                                      Icons.date_range_outlined,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  endDate,
-                                  style: const TextStyle(
-                                    color: Colors.black,
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    endDate,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 )
                               ],

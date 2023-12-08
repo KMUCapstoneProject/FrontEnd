@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project_2/Server_conn/mariaDB_server.dart';
 import 'package:project_2/drawer/event_content_page.dart';
+import 'package:project_2/drawer/event_content_page2.dart';
 
 class event_list extends StatefulWidget {
   const event_list({super.key});
@@ -27,6 +28,7 @@ class _event_list extends State<event_list> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: loading ? Text("비교과 및 행사 수신함") : Text("loading..."),
@@ -39,12 +41,15 @@ class _event_list extends State<event_list> {
               _psrl[index]["startTime"].toString().split("T");
           List<String> end_time =
               _psrl[index]["deadline"].toString().split("T");
+          String  test = _psrl[index]["title"].toString();
+
+
           return GestureDetector(
             onTap: () async {
-              await Get.off(event_content_page(), arguments: _psrl[index]);
+              await Get.off(event_content_page2(), arguments: _psrl[index]);
             },
             child: Card(
-              margin: EdgeInsets.only(left: 10,right: 10),
+              margin: EdgeInsets.only(left: 10, right: 10),
               child: Row(
                 children: [
                   Container(
@@ -68,11 +73,11 @@ class _event_list extends State<event_list> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "${_psrl[index]["title"]}",
-                          style: const TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            test,
+                            style: TextStyle(fontSize: 18.0),
                           ),
                         ),
                         SizedBox(

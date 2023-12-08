@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project_2/Server_conn/mariaDB_server.dart';
+import 'package:get/get.dart';
+import 'package:project_2/drawer/error_page.dart';
+import 'package:project_2/drawer/event_content_page2.dart';
 
 class Error_list extends StatefulWidget {
   const Error_list({super.key});
@@ -18,21 +21,25 @@ class _Error_listState extends State<Error_list> {
     mariaDB_server().messges_output().then((value) {
       setState(() {
         _psrl = value;
+        //print(value);
       });
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("민원함"),
+        centerTitle: true,
+      ),
       body: ListView.builder(
         itemCount: _psrl.length,
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Get.to(Error_page(), arguments: _psrl[index]);
+            },
             child: Card(
               shape: RoundedRectangleBorder(
                 side: BorderSide(width: 5.0),
@@ -52,13 +59,11 @@ class _Error_listState extends State<Error_list> {
                     child: Container(
                       margin: EdgeInsets.all(10),
                       child: Text(
-                        "data22",
+                        _psrl[index]["senderName"],
                         textAlign: TextAlign.start,
                       ),
                     ),
                   ),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.check)),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
                 ],
               ),
             ),

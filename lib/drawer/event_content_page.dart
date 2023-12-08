@@ -61,7 +61,7 @@ class event_content_page extends StatelessWidget {
                 flex: 4,
                 child: Container(
                   child: Text(
-                    "내용\n ${_psrl_data["content"]}",
+                    "내용\n ${_psrl_data["```content```"]}",
                     style: TextStyle(fontSize: 20),
                   ),
                 ),

@@ -36,6 +36,7 @@ class _event_registrationState extends State<event_registration> {
   String endDate = "마감 날짜";
   String startTime = "시작 시간";
   String endTime = "마감 시간";
+
 // 이미지를 선택해서 리스트에 저장하는 함수
   Future<void> _pickImage() async {
     final List<XFile> images = await ImagePicker().pickMultiImage();
@@ -104,13 +105,21 @@ class _event_registrationState extends State<event_registration> {
       context: context,
       initialTime: TimeOfDay.now(),
     );
-    selectedTime.then((value) {
-      if (value != null) {
-        setState(() {
-          startTime = "${value.hour}:${value.minute}";
-        });
-      }
-    });
+    selectedTime.then(
+      (value) {
+        if (value != null) {
+          setState(
+            () {
+              if (value.minute < 10) {
+                startTime = "${value.hour}:0${value.minute}";
+              } else {
+                startTime = "${value.hour}:${value.minute}";
+              }
+            },
+          );
+        }
+      },
+    );
   }
 
   // 마감시간 설정
@@ -123,16 +132,25 @@ class _event_registrationState extends State<event_registration> {
     selectedTime.then((value) {
       if (value != null) {
         setState(() {
-          endTime = "${value.hour}:${value.minute}";
+          if (value.minute < 10) {
+            endTime = "${value.hour}:0${value.minute}";
+          } else {
+            endTime = "${value.hour}:${value.minute}";
+          }
         });
       }
     });
   }
+
   // 앱바에 완료버튼을 누르면 이제 내용을 서버에 전송
   upload() async {
+
+
+
     String start = "$startDate $startTime:00";
     String end = "$endDate $endTime:00";
-    await mariaDB_server().event_registration_input(1, title_ctr.text,content_ctr.text, start, end, Lat, Lng, locaton_ctr.text);
+    await mariaDB_server().event_registration_input(1, title_ctr.text,
+        content_ctr.text, start, end, Lat, Lng, locaton_ctr.text,imageFiles);
     Get.back();
   }
 
@@ -180,17 +198,23 @@ class _event_registrationState extends State<event_registration> {
                             padding: const EdgeInsets.all(10),
                             child: Row(
                               children: [
-                                Container(
-                                  margin: const EdgeInsets.only(right: 20),
-                                  child: const Icon(
-                                    Icons.date_range_outlined,
-                                    color: Colors.black,
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(right: 20),
+                                    child: const Icon(
+                                      Icons.date_range_outlined,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  startDate,
-                                  style: const TextStyle(
-                                    color: Colors.black,
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    startDate,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 )
                               ],
@@ -252,17 +276,23 @@ class _event_registrationState extends State<event_registration> {
                             padding: const EdgeInsets.all(10),
                             child: Row(
                               children: [
-                                Container(
-                                  margin: const EdgeInsets.only(right: 20),
-                                  child: const Icon(
-                                    Icons.date_range_outlined,
-                                    color: Colors.black,
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(right: 20),
+                                    child: const Icon(
+                                      Icons.date_range_outlined,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  endDate,
-                                  style: const TextStyle(
-                                    color: Colors.black,
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    endDate,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 )
                               ],
@@ -330,7 +360,7 @@ class _event_registrationState extends State<event_registration> {
                       ),
                       child: Container(
                         padding:
-                        const EdgeInsets.only(bottom: 2, left: 2, right: 2),
+                            const EdgeInsets.only(bottom: 2, left: 2, right: 2),
                         child: TextField(
                           controller: locaton_ctr,
                           decoration: const InputDecoration(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:project_2/Server_conn/mariaDB_server.dart';
+import 'package:project_2/registration/marker_event_page.dart';
 import 'Building_map/Building_data.dart';
 import 'package:get/get.dart';
 import 'Building_map/building_map.dart';
@@ -64,7 +65,7 @@ class Make_marker {
           markerId: MarkerId(_event_data[i]["title"]),
           position: LL,
           onTap: () {
-            windowform_event_page(_event_data[i]["title"], LL);
+            windowform_event_page(_event_data[i], LL);
           },
         ),
       );
@@ -99,7 +100,6 @@ class Make_marker {
             Text(building_name),
             ElevatedButton(
               onPressed: () {
-                mariaDB_server().room("name");
                 Get.to(swiper_test2(), arguments: building_name);
                 _customInfoWindowController.hideInfoWindow!();
               },
@@ -112,7 +112,7 @@ class Make_marker {
     );
   }
 
-  dynamic windowform_event_page(String building_name, LatLng location) {
+  dynamic windowform_event_page(Map<String,dynamic> event_data, LatLng location) {
     return _customInfoWindowController.addInfoWindow!(
       Container(
         height: 300,
@@ -126,10 +126,11 @@ class Make_marker {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(building_name),
+            Text(event_data["title"]),
             ElevatedButton(
               onPressed: () {
                 _customInfoWindowController.hideInfoWindow!();
+                Get.to(Marker_event_page(),arguments: event_data);
               },
               child: Text("행사내용"),
             )

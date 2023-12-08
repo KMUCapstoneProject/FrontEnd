@@ -51,6 +51,7 @@ class building_data {
     addMarker(LatLng(35.853726, 128.486620), "취업진로센터", 0,2);
     addMarker(LatLng(35.854465, 128.489981), "계명대학교체육관", 0,1);
     addMarker(LatLng(35.858000, 128.484450), "아담스채플", -1,1);
+    addMarker(LatLng(35.85579, 128.48889), "본관", -1,2);
   }
 
 

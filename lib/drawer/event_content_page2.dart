@@ -3,31 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project_2/Server_conn/mariaDB_server.dart';
 import 'package:project_2/drawer/event_list.dart';
+import 'package:project_2/img_page.dart';
 
-class event_content_page extends StatelessWidget {
-  const event_content_page({super.key});
+class event_content_page2 extends StatelessWidget {
+  const event_content_page2({super.key});
 
-  /*
-
-          padding: EdgeInsets.all(20),
-          width: MediaQuery.of(context).size.width * 0.8,
-          height: MediaQuery.of(context).size.height * 0.8,
-   */
   @override
   Widget build(BuildContext context) {
-
-    Map<String,dynamic> _psrl_data = Get.arguments;
-
+    Map<String, dynamic> _psrl_data = Get.arguments;
+    String _title = _psrl_data["title"];
+    List<String> _startTime = _psrl_data["startTime"].toString().split("T");
+    List<String> _endTime = _psrl_data["deadline"].toString().split("T");
+    String _place = _psrl_data["details"];
+    String _content = _psrl_data["content"];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_psrl_data["postId"].toString()),
+        title: Text("test"),
         centerTitle: true,
       ),
       body: Center(
         child: Container(
-          width: 286,
-          height: 475,
+          width: MediaQuery.of(context).size.width * 0.85,
+          height: MediaQuery.of(context).size.height * 0.75,
           clipBehavior: Clip.antiAlias,
           decoration: ShapeDecoration(
             color: Color(0xFFA79880),
@@ -35,70 +33,66 @@ class event_content_page extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
           ),
-          child: Stack(
-            children: [
-              Positioned(
-                left: 24,
-                top: 20,
-                child: SizedBox(
-                  width: 228,
-                  height: 45,
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Get.to(Img_page(),arguments: _psrl_data["imgUrl"]);
+                  },
+                  child: Text("첨부\n이미지"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFC8C68D),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 80,
                   child: Text(
-                    '제목:운동',
+                    '제목: $_title',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 26,
+                      fontSize: 30,
                       fontFamily: 'Epilogue',
                       fontWeight: FontWeight.w400,
                       height: 0,
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                left: 23,
-                top: 82,
-                child: SizedBox(
-                  width: 241,
-                  height: 75,
+                SizedBox(
+                  height: 85,
                   child: Text(
-                    '시간:\n2023-12-03 19:34~\n2023-12-05 19:34',
+                    '시간:\n ${_startTime[0]} ${_startTime[1]} ~ \n${_endTime[0]} ${_endTime[1]}',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 15,
+                      fontSize: 20,
                       fontFamily: 'Epilogue',
                       fontWeight: FontWeight.w400,
                       height: 0,
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                left: 18,
-                top: 221,
-                child: SizedBox(
-                  width: 246,
-                  height: 59,
+                SizedBox(
+                  height: 50,
                   child: Text(
-                    '장소 : 운동회',
+                    '장소 : $_place',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: 20,
                       fontFamily: 'Epilogue',
                       fontWeight: FontWeight.w400,
                       height: 0,
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                left: 18,
-                top: 293,
-                child: SizedBox(
-                  width: 256,
-                  height: 99,
+                SizedBox(
+                  height: 150,
                   child: Text(
-                    '내용: 화이팅',
+                    '내용: $_content',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -108,106 +102,44 @@ class event_content_page extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                left: 93,
-                top: 405,
-                child: Container(
-                  width: 100,
-                  height: 62,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Container(
-                        width: 100,
-                        height: 25,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              left: 0,
-                              top: 0,
-                              child: Container(
-                                width: 100,
-                                height: 25,
-                                decoration: ShapeDecoration(
-                                  color: Color(0xFFC8C68D),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              left: 9,
-                              top: 6,
-                              child: SizedBox(
-                                width: 85,
-                                height: 14,
-                                child: Text(
-                                  '수락',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 10,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                      ElevatedButton(
+                        onPressed: () async {
+                          await mariaDB_server()
+                              .event_list_upgrade(_psrl_data["postId"]);
+                          Get.off(event_list());
+                        },
+                        child: Text("수락"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFFC8C68D),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      Container(
-                        width: 100,
-                        height: 25,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              left: 0,
-                              top: 0,
-                              child: Container(
-                                width: 100,
-                                height: 25,
-                                decoration: ShapeDecoration(
-                                  color: Color(0xFFC8C68D),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              left: 9,
-                              top: 6,
-                              child: SizedBox(
-                                width: 85,
-                                height: 14,
-                                child: Text(
-                                  '거절',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 10,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                      ElevatedButton(
+                        onPressed: () async {
+                          await mariaDB_server()
+                              .event_list_delete(_psrl_data["postId"]);
+                          Get.off(event_list());
+                        },
+                        child: Text("거절"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFFC8C68D),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
-                      ),
+                      )
                     ],
                   ),
-                )
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

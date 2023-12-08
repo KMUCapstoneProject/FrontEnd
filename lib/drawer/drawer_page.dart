@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project_2/drawer/error_list.dart';
+import 'package:project_2/drawer/event_content_page2.dart';
 import 'package:project_2/drawer/event_list.dart';
 import 'package:project_2/registration/event_registration_page.dart';
 import 'package:project_2/registration/event_screen_page.dart';
@@ -26,8 +27,10 @@ class _drawer_pageState extends State<drawer_page> {
       return admin_page();
     } else if (check == "MANAGER") {
       return manager_page();
-    } else {
+    } else if(check == "NORMAL") {
       return normal_user_page();
+    } else{
+      return user_page();
     }
   }
 
@@ -80,16 +83,6 @@ class _drawer_pageState extends State<drawer_page> {
             title: Text("행사 신청서"),
             onTap: () {
               Get.to(event_registration());
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.find_in_page_rounded,
-              color: Colors.grey[850],
-            ),
-            title: Text("오류접수"),
-            onTap: () {
-              Get.to(Inquiry());
             },
           ),
           ListTile(
@@ -163,6 +156,16 @@ class _drawer_pageState extends State<drawer_page> {
               Icons.find_in_page_rounded,
               color: Colors.grey[850],
             ),
+            title: Text("비교과 목록"),
+            onTap: () {
+              Get.to(event_screen_page());
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.find_in_page_rounded,
+              color: Colors.grey[850],
+            ),
             title: Text("오류접수"),
             onTap: () {
               Get.to(Inquiry());
@@ -199,6 +202,16 @@ class _drawer_pageState extends State<drawer_page> {
               Icons.find_in_page_rounded,
               color: Colors.grey[850],
             ),
+            title: Text("비교과 목록"),
+            onTap: () {
+              Get.to(event_screen_page());
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.find_in_page_rounded,
+              color: Colors.grey[850],
+            ),
             title: Text("오류접수"),
             onTap: () {
               Get.to(Inquiry());
@@ -208,4 +221,31 @@ class _drawer_pageState extends State<drawer_page> {
       ),
     );
   }
+
+  Widget user_page() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          UserAccountsDrawerHeader(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.blue,
+                  Colors.green,
+                ],
+              ),
+              borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(40.0),
+                bottomLeft: Radius.circular(40.0),
+              ),
+            ),
+            accountName: Text("닉네임 : ${user_data().get_nickname()}"),
+            accountEmail: Text("email : ${user_data().get_email()}"),
+          )
+        ],
+      ),
+    );
+  }
+
 }

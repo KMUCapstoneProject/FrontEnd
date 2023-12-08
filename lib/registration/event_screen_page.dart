@@ -50,16 +50,13 @@ class _event_screen_page extends State<event_screen_page> {
                 _psrl[index]["deadline"].toString().split("T");
                 return Card(
                   elevation:10,
-                  //child: Center(
-                  //  child:Image.asset(values[index]),
-                  //),
                   child: Column(children: [
                     ClipRRect(
                         borderRadius : const BorderRadius.only(
                           topLeft: Radius.circular(16.0),
                           topRight: Radius.circular(16.0),
                         ),
-                        child:Image.asset("images/${values[4]}",height: MediaQuery.of(context).size.height * 0.2,width: MediaQuery.of(context).size.width * 0.45,)
+                        child:Image.network("${_psrl[index]["imgUrl"][0]}",height: MediaQuery.of(context).size.height * 0.2,width: MediaQuery.of(context).size.width * 0.45,)
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -77,7 +74,6 @@ class _event_screen_page extends State<event_screen_page> {
                           const SizedBox(
                             height: 4.0,
                           ),
-                          Text("운영기간: " + Operating_period[0], style: TextStyle(fontSize:10, color:Colors.black))
                         ],
                       ),
                     )
