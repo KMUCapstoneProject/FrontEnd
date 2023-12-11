@@ -55,7 +55,7 @@ class Img_page extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            for(int i = 0 ; i< img_url.length;i++)
+            for(int i = 0 ;i< img_url.length;i++)
               Image.network(img_url[i]),
           ],
         ),

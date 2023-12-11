@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ import 'package:project_2/search/search_page.dart';
 import 'package:project_2/search/search_start_page.dart';
 import 'package:project_2/user_data.dart';
 import '../Building_map/Building_data.dart';
+import 'package:label_marker/label_marker.dart';
 
 class kmu_map extends StatefulWidget {
   const kmu_map({super.key});
@@ -27,9 +30,13 @@ class _kmu_mapState extends State<kmu_map> {
   static Make_marker make_marker = Make_marker();
   static CustomInfoWindowController _customInfoWindowController =
       make_marker.get_CIWC();
-  final Set<Marker> _markers = make_marker.get_marker();
+  late Set<Marker> _markers = {};
+  late Set<Circle> _circle = {};
+  late Set<Polyline> _polyline = {};
+  late Set<Polyline> _polyline_a = {};
   late GoogleMapController googleMapController;
   static bool _change_load = false;
+  bool _loading_page = true;
 
   static final LatLng start_map = LatLng(35.855764, 128.487199); //계명대학교 좌표
   static final CameraPosition initialPosition = CameraPosition(
@@ -43,18 +50,41 @@ class _kmu_mapState extends State<kmu_map> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
+    _markers = make_marker.get_marker();
     rootBundle.loadString('assets/map_style.txt').then((string) {
       _mapStyle = string;
     });
+  }
+
+  //길찾기 기능 사용시 선 정보와 감지 범위 정보와 마커추가
+  void input_data(String name) {
+    _polyline = road_data().get_line();
+    _polyline_a = road_data().get_line_a();
+    _circle = road_data().get_circles();
+    _markers.addLabelMarker(
+      LabelMarker(
+        label: "도착",
+        markerId: MarkerId("end_point"),
+        position: building_data().building_change_latlang(name),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  void clear_data() {
+    _polyline.clear();
+    _polyline_a.clear();
+    _circle.clear();
+    _markers.removeWhere((element) => element.markerId.value == "end_point");
   }
 
   int count = 1;
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 50,
@@ -77,8 +107,11 @@ class _kmu_mapState extends State<kmu_map> {
                 IconButton(
                   onPressed: () {
                     setState(
-                      () {
+                      () async {
                         road_data().reset_road();
+                        clear_data();
+                        await make_marker.input_event_marker();
+                        _markers = make_marker.get_marker();
                         _successMessage(context);
                       },
                     );
@@ -110,14 +143,17 @@ class _kmu_mapState extends State<kmu_map> {
           Icons.navigation,
         ),
         backgroundColor: Colors.blue,
-        onPressed: () async {
-          final data = await Get.to(search_start_page());
-          setState(() {
-            if (data is List) {
-              road_data().reset_road();
-              road_data().input_road(data[0], data[1]);
-            } else {}
-          });
+        onPressed: () {
+          setState(
+            () async {
+              final data = await Get.to(search_start_page());
+              if (data is List) {
+                road_data().reset_road();
+                input_data(data[1]);
+                await road_data().input_road(data[0], data[1]);
+              } else {}
+            },
+          );
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -145,6 +181,7 @@ class _kmu_mapState extends State<kmu_map> {
                 start.latitude, start.longitude, end.latitude, end.longitude);
             if (distance < 20) {
               road_data().reset_road();
+              clear_data();
             }
           }
           return GestureDetector(
@@ -163,6 +200,20 @@ class _kmu_mapState extends State<kmu_map> {
                   width: 200,
                   offset: 35,
                 ),
+                Container(
+                  child: _loading_page ? null : Container(
+                    width: 800,
+                    height: 800,
+                    color: Colors.black.withOpacity(0.3),
+                    child: Center(
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        child:  CircularProgressIndicator(strokeWidth: 12),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           );
@@ -176,8 +227,8 @@ class _kmu_mapState extends State<kmu_map> {
       initialCameraPosition: initialPosition,
       markers: _markers,
       //Set<Marker>.of(_sum_markers),
-      polylines: _change_load? Set<Polyline>.of(road_data().get_line()) : Set<Polyline>.of(road_data().get_line_a()),
-      circles: Set<Circle>.of(road_data().get_circles()),
+      polylines: _change_load ? _polyline : _polyline_a,
+      circles: _circle,
       myLocationEnabled: true,
       onMapCreated: (GoogleMapController controller) {
         googleMapController = controller;
@@ -222,18 +273,35 @@ class _kmu_mapState extends State<kmu_map> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Builder(
+                  builder: (context) {
+                    return MaterialButton(
+                      minWidth: 40,
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.list,
+                            color: Colors.blue,
+                          ),
+                          Text("메  뉴"),
+                        ],
+                      ),
+                    );
+                  },
+                ),
                 MaterialButton(
                   minWidth: 40,
                   onPressed: () {
                     setState(() {
-                      if(_change_load)
-                        {
-                          _change_load = false;
-                        }
-                      else
-                        {
-                          _change_load = true;
-                        }
+                      if (_change_load) {
+                        _change_load = false;
+                      } else {
+                        _change_load = true;
+                      }
                     });
                   },
                   child: Column(
@@ -247,24 +315,6 @@ class _kmu_mapState extends State<kmu_map> {
                     ],
                   ),
                 ),
-                Builder(builder: (context) {
-                  return MaterialButton(
-                    minWidth: 40,
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.list,
-                          color: Colors.blue,
-                        ),
-                        Text("메뉴"),
-                      ],
-                    ),
-                  );
-                }),
               ],
             ),
             Row(
@@ -291,7 +341,7 @@ class _kmu_mapState extends State<kmu_map> {
                   ),
                 ),
                 MaterialButton(
-                  minWidth: 40,
+                  minWidth: 30,
                   onPressed: () async {
                     if (!user_data().get_login_check()) {
                       await Get.to(login_page());

@@ -32,7 +32,7 @@ class _event_screen_page extends State<event_screen_page> {
   Widget build(BuildContext context)  {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Gridview Tutorial'),
+          title: Text('비교과 행사 목록'),
         ),
         body: Container(
             child: GridView.builder(

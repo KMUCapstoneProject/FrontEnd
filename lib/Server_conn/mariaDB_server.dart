@@ -224,7 +224,7 @@ class mariaDB_server {
     Map<String, dynamic> apiJoin = {
       "title" : title,
       "content" : content,
-      "receiverName" :  receiverName,
+      "receiverName" :  "admin@naver.com",
     };
     String jsonApiJoin = jsonEncode(apiJoin);
 
@@ -248,7 +248,7 @@ class mariaDB_server {
 
     try {
       Response response =
-      await dio!.get("${this.url}messages/sent");
+      await dio!.get("${this.url}messages/received");
       if (response.statusCode == 200||response.statusCode == 201) {
         print(response.data["data"]);
       }

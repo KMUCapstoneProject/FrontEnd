@@ -8,9 +8,9 @@ import 'package:project_2/Server_conn/mariaDB_server.dart';
 import '../Server_conn/neo4j_server.dart';
 
 class road_data {
-  final List<Polyline> _road_line = <Polyline>[];
-  final List<Polyline> _road_line_a = <Polyline>[];
-  final List<Circle> _circles = <Circle>[];
+  final Set<Polyline> _road_line = {};
+  final Set<Polyline> _road_line_a = {};
+  final Set<Circle> _circles = {};
   final List<LatLng> test_test = <LatLng>[];
   LatLng _now_location = LatLng(0.0, 0.0);
 
@@ -27,7 +27,7 @@ class road_data {
 
   road_data._internal() {}
 
-  void input_road(String building_start, String building_end) async {
+  Future<void> input_road(String building_start, String building_end) async {
     LatLng data_start;
     LatLng data_end;
 
@@ -78,11 +78,11 @@ class road_data {
     );
   }
 
-  List<Polyline> get_line_a() => _road_line_a;
+  Set<Polyline> get_line_a() => _road_line_a;
 
-  List<Polyline> get_line() => _road_line;
+  Set<Polyline> get_line() => _road_line;
 
-  List<Circle> get_circles() => _circles;
+  Set<Circle> get_circles() => _circles;
 
   List<LatLng> get_latlng() => test_test;
 

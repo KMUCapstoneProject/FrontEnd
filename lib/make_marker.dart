@@ -18,7 +18,8 @@ class Make_marker {
   static building_data data_box = building_data();
   late CustomInfoWindowController _customInfoWindowController =
       CustomInfoWindowController(); //커스텀윈도우 컨트롤러
-  final Set<Marker> _markers = {};
+  late Set<Marker> _markers = {};
+
   BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
 
   Make_marker() {
@@ -31,6 +32,21 @@ class Make_marker {
   CustomInfoWindowController get_CIWC() => _customInfoWindowController;
 
   loadData() async {
+    input_marker();
+    input_event_marker();
+  }
+
+  void addCustomIcon() {
+    BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(), "images/kmu_marker2.png")
+        .then(
+          (icon) {
+        markerIcon = icon;
+      },
+    );
+  }
+
+  void input_marker() {
     final List<LatLng> _LatLang = data_box.get_latlang();
     _customInfoWindowController.dispose();
 
@@ -50,7 +66,9 @@ class Make_marker {
         ),
       );
     }
+  }
 
+  Future<void> input_event_marker() async {
     List<dynamic> _event_data = <dynamic>[];
     await mariaDB_server().event_registration_get1().then((value) {
       _event_data = value;
@@ -58,11 +76,11 @@ class Make_marker {
 
     for (int i = 0; i < _event_data.length; i++) {
       LatLng LL =
-          LatLng(_event_data[i]["latitude"], _event_data[i]["longitude"]);
+      LatLng(_event_data[i]["latitude"], _event_data[i]["longitude"]);
       _markers.add(
         Marker(
           icon: markerIcon,
-          markerId: MarkerId(_event_data[i]["title"]),
+          markerId: MarkerId(_event_data[i]["postId"].toString()),
           position: LL,
           onTap: () {
             windowform_event_page(_event_data[i], LL);
@@ -71,17 +89,6 @@ class Make_marker {
       );
     }
   }
-
-  void addCustomIcon() {
-    BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(), "images/kmu_marker2.png")
-        .then(
-          (icon) {
-        markerIcon = icon;
-      },
-    );
-  }
-
 
   dynamic windowform_page(String building_name, LatLng location) {
     return _customInfoWindowController.addInfoWindow!(

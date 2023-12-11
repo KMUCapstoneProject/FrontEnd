@@ -76,6 +76,8 @@ flutter:
     - images/kmu/공대/공대3호관/
     - images/kmu/공대/공대4호관/
     - images/
+    - images/kmu/쉐턱관/
+    - images/kmu/오산관/
     - assets/map_style.txt
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

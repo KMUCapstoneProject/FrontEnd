@@ -27,7 +27,7 @@ class _drawer_pageState extends State<drawer_page> {
       return admin_page();
     } else if (check == "MANAGER") {
       return manager_page();
-    } else if(check == "NORMAL") {
+    } else if(check == "USER") {
       return normal_user_page();
     } else{
       return user_page();

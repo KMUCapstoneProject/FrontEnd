@@ -421,7 +421,7 @@ class _registration_pageState extends State<registration_page> {
                 child: TextField(
                   controller: title_ctr,
                   style: const TextStyle(
-                    fontSize: 25,
+                    fontSize: 20,
                     fontWeight: FontWeight.w600,
                   ),
                   decoration: InputDecoration(
@@ -433,12 +433,13 @@ class _registration_pageState extends State<registration_page> {
                 ),
               ),
               Container(
+                //height: 100,
                 margin: const EdgeInsets.all(10),
                 child: TextField(
                   controller: content_ctr,
-                  maxLines: 20,
+                  maxLines: 9,
                   style: const TextStyle(
-                    fontSize: 20,
+                    fontSize: 15,
                     fontWeight: FontWeight.w500,
                   ),
                   decoration: InputDecoration(

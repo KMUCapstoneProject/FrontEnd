@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:project_2/Building_map/Building_data.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:project_2/Building_map/map_img_page.dart';
 import 'package:project_2/Server_conn/mariaDB_server.dart';
 import 'package:project_2/Building_map/img_file.dart';
 import 'package:project_2/img_page.dart';
@@ -23,6 +25,7 @@ class _swiper_test2State extends State<swiper_test2> {
   ScrollController _scrollController = ScrollController();
   building_data tes = building_data();
   List<int> floor = [0, 0, 0, 0, 0, 0];
+  List<String> img_page = [];
   int number = 0;
 
   void initState() {
@@ -63,6 +66,17 @@ class _swiper_test2State extends State<swiper_test2> {
     return Scaffold(
       appBar: AppBar(
         title: Text(Get.arguments),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.to(Map_img_page(), arguments: img_page[_currentIndex]);
+            },
+            child: Text(
+              "이미지\n확대",
+              textAlign: TextAlign.center,style: TextStyle(color: Colors.white),
+            ),
+          )
+        ],
       ),
       body: Container(
         color: Colors.white,
@@ -73,42 +87,34 @@ class _swiper_test2State extends State<swiper_test2> {
                 carouselController: _carouselController,
                 options: CarouselOptions(
                   height: 300.0,
+                  viewportFraction: 1.0,
                   onPageChanged: (index, reason) {
                     setState(
                       () {
                         _currentIndex = index;
+                        _selectedFloor = index+1;
                       },
                     );
                   },
                 ),
                 items: test_st.map(
                   (i) {
+                    String img = img_building(Get.arguments, test_st.indexOf(i))
+                        .toString();
+                    img_page.add(img);
                     return Builder(
                       builder: (BuildContext context) {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(
-                              height: 20,
-                            ),
                             Container(
                               width: MediaQuery.of(context).size.width,
-                              margin: EdgeInsets.symmetric(horizontal: 12.0),
+                              margin: EdgeInsets.symmetric(horizontal: 0.0),
                               decoration: BoxDecoration(color: Colors.white),
                               child: Center(
                                 child: Image.asset(img_building(
                                     Get.arguments, test_st.indexOf(i))),
                               ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                List<String> img = [
-                                  img_building(
-                                      Get.arguments, test_st.indexOf(i))
-                                ];
-                                Get.to(Img_page(), arguments: img);
-                              },
-                              child: Text("확대"),
                             ),
                           ],
                         );

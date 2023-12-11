@@ -11,7 +11,7 @@ class Marker_event_page extends StatelessWidget {
     String _title = _psal["title"];
     List<String> _start_time  = _psal["startTime"].toString().split("T");
     List<String> _end_time  = _psal["deadline"].toString().split("T");
-    print(_psal);
+    List<dynamic> url_count = _psal["imgUrl"];
 
     return Scaffold(
       appBar: AppBar(
@@ -47,12 +47,17 @@ class Marker_event_page extends StatelessWidget {
                   decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(width: 0.2)),
                   ),
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    child: Image.network(
-                      "http://friedkimchi.kdedevelop.com/downloadFile/1000000527.jpg",
-                      width: MediaQuery.of(context).size.width * 0.85,
-                    ),
+                  child: Column(
+                    children: [
+                      for(int i = 0 ; i<url_count.length;i++)
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        child: Image.network(
+                          _psal["imgUrl"][i].toString(),
+                          width: MediaQuery.of(context).size.width * 0.85,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Container(
