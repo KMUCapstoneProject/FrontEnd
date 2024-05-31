@@ -7,12 +7,17 @@ import 'package:project_2/Server_conn/neo4j_server.dart';
 import 'package:project_2/user_data.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:project_2/time/time_model.dart';
 
 class mariaDB_server {
+
+  final storage = FlutterSecureStorage();
   static final mariaDB_server _instance = mariaDB_server._internal();
   late Dio dio;
   late CookieJar cookieJar;
-  final String url = "https://friedkimchi.kdedevelop.com/";
+  final String url = "http://27.113.54.21:20143/";
+
 
   factory mariaDB_server() {
     return _instance;
@@ -20,26 +25,99 @@ class mariaDB_server {
 
   mariaDB_server._internal() {
     dio = Dio();
-    cookieJar = CookieJar();
-    dio.options.followRedirects = true;
-    dio.options.maxRedirects = 10;
-    dio.options.validateStatus =
-        (status) => (status != null) && (status >= 200 && status <= 310);
-    dio.interceptors.add(CookieManager(cookieJar));
   }
 
+  FlutterSecureStorage returnsSorage(){
+    return storage;
+  }
+
+  // 개인 시간표 삭제 학교
+  Future<void> timetableDelete(int id) async {
+    try {
+      Response response = await dio!.get(
+          "${this.url}api/timetable/schoolDelete?id=${id}",
+          options: Options(headers: {
+            'authorization':
+            'Bearer ${await storage.read(key: 'accessTokenKey')}'
+          }));
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+    }
+  }
+
+  // 개인 시간표 추가 학교
+  Future<void> addSchool(int id) async {
+    try {
+      Response response = await dio!.post(
+          "${this.url}api/timetable/addSchool?timetableId=${id}",
+          options: Options(headers: {
+            'authorization':
+            'Bearer ${await storage.read(key: 'accessTokenKey')}'
+          }));
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+    }
+  }
+// 개인 시간표 받기
+  Future<List<TimeModel>> loabbyUser() async{
+    try {
+      Response response =
+      await dio!.post("${this.url}api/timetable/loadbyUser", options: Options(headers: {
+        'authorization':
+        'Bearer ${await storage.read(key: 'accessTokenKey')}'
+      }));
+      List<TimeModel> timeInstances = [];
+      for (var time in response.data) {
+        final instance = TimeModel.fromJsonMyTimeTable(time);
+        timeInstances.add(instance);
+      }
+      return timeInstances;
+
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+    }
+    return <TimeModel>[];
+  }
+
+  // 시간표 검색결과 받기
+  Future<List<TimeModel>> searchSchool(String keyword, int status) async{
+    try {
+      Response response =
+      await dio!.post("${this.url}api/timetable/searchSchool", data: {"keyword": keyword, "status": status});
+      List<TimeModel> timeInstances = [];
+      for (var time in response.data) {
+        final instance = TimeModel.fromJson(time);
+        timeInstances.add(instance);
+      }
+      return timeInstances;
+
+    } catch (e) {
+      if (e is DioException) {
+        print('Bad Request: ${e.response!.data}');
+      }
+    }
+    return <TimeModel>[];
+  }
 
   //로그인
   Future<Map<String,dynamic>> login(String email, String password) async {
-    final formData = FormData.fromMap({
-      'email': email,
-      'password': password,
-    });
-
-    cookieJar.deleteAll();
+    final formData = {
+      "email": email,
+      "password": password,
+    };
     try {
+
       Response response =
-          await dio!.post("${this.url}api/login", data: formData);
+      await dio!.post("${this.url}auth/login", data: formData);
+      await storage.write(key: "accessTokenKey", value: response.data);
+      print(" 1111111111");
+
     } catch (e) {
       if (e is DioException) {
         print('Bad Request: ${e.response!.data}');
@@ -48,7 +126,7 @@ class mariaDB_server {
     }
     try {
       Response response =
-      await dio!.get("${this.url}api/info");
+      await dio!.get("${this.url}user/info", options: Options(headers: {'authorization': 'Bearer ${await storage.read(key: 'accessTokenKey')}'}));
       return response.data;
     } catch (e) {
       return {};
@@ -57,6 +135,7 @@ class mariaDB_server {
 
   //로그아웃
   Future<void> logout() async {
+    /*
     try {
       Response response =
       await dio!.get("${this.url}api/logout");
@@ -65,13 +144,13 @@ class mariaDB_server {
         print('Bad Request: ${e.response!.data}');
       }
     }
-    cookieJar.deleteAll();
+    cookieJar.deleteAll();*/
+    await storage.delete(key: 'accessTokenKey');
     user_data().reset_login_data();
   }
 
   //회원가입
   Future<void> create_member(String email, String nickname, String password) async {
-    String url_member = this.url + "api/join";
 
     Map<String, String> apiJoin = {
       'nickname': nickname,
@@ -82,8 +161,8 @@ class mariaDB_server {
 
     try {
       Response response =
-          await dio!.post("${this.url}api/join", data: jsonApiJoin);
-      if (response.statusCode == 201) {
+      await dio!.post("${this.url}auth/signup", data: jsonApiJoin);
+      if (response.statusCode == 200) {
         print('Success: ${response.data}');
       }
     } catch (e) {
@@ -110,7 +189,7 @@ class mariaDB_server {
     String jsonApiJoin = jsonEncode(apiJoin);
     try {
       Response response =
-          await dio!.post("${this.url}api/posting/add", data: jsonApiJoin);
+      await dio!.post("${this.url}api/posting/add", data: jsonApiJoin);
       if (response.statusCode == 201) {
         print('Success: ${response.data}');
       }
@@ -161,7 +240,7 @@ class mariaDB_server {
   Future<List<dynamic>> find_room(String building_name) async {
     try {
       Response response =
-      await dio!.get("${this.url}api/timetable/findClassinBuilding?building=$building_name");
+      await dio!.get("${this.url}api/timetable/findEmptyClassinBuilding?building=$building_name");
       List<dynamic> test = response.data;
       test.sort((a, b) => a['classNum']!.compareTo(b['classNum']!));
       return test;

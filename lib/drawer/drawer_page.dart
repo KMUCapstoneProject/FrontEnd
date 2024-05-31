@@ -8,7 +8,10 @@ import 'package:project_2/registration/event_screen_page.dart';
 import 'package:project_2/registration/inquiry_page.dart';
 import 'package:project_2/registration/registration_page.dart';
 import 'package:project_2/user_data.dart';
+import '../bus_/bus_main_page.dart';
 import '../login_page.dart';
+import '../time/timeTable.dart';
+import '../train_arrive.dart';
 
 class drawer_page extends StatefulWidget {
   const drawer_page({super.key});
@@ -103,6 +106,36 @@ class _drawer_pageState extends State<drawer_page> {
             title: Text("민원함"),
             onTap: () {
               Get.to(Error_list());
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.find_in_page_rounded,
+              color: Colors.grey[850],
+            ),
+            title: Text("시간표"),
+            onTap: () {
+              Get.to(TimeTable());
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.find_in_page_rounded,
+              color: Colors.grey[850],
+            ),
+            title: Text("버스"),
+            onTap: () {
+              Get.to(Bus_main_page());
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.find_in_page_rounded,
+              color: Colors.grey[850],
+            ),
+            title: Text("지화철"),
+            onTap: () {
+              Get.to(HomeScreen());
             },
           )
         ],
@@ -217,6 +250,36 @@ class _drawer_pageState extends State<drawer_page> {
               Get.to(Inquiry());
             },
           ),
+          ListTile(
+            leading: Icon(
+              Icons.find_in_page_rounded,
+              color: Colors.grey[850],
+            ),
+            title: Text("시간표"),
+            onTap: () {
+              Get.to(TimeTable());
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.find_in_page_rounded,
+              color: Colors.grey[850],
+            ),
+            title: Text("버스"),
+            onTap: () {
+              Get.to(Bus_main_page());
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.find_in_page_rounded,
+              color: Colors.grey[850],
+            ),
+            title: Text("지화철"),
+            onTap: () {
+              Get.to(HomeScreen());
+            },
+          )
         ],
       ),
     );

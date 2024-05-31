@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:geolocator/geolocator.dart';
@@ -36,7 +37,7 @@ class _kmu_mapState extends State<kmu_map> {
   late Set<Polyline> _polyline_a = {};
   late GoogleMapController googleMapController;
   static bool _change_load = false;
-  bool _loading_page = true;
+  static bool _loading_page = true;
 
   static final LatLng start_map = LatLng(35.855764, 128.487199); //계명대학교 좌표
   static final CameraPosition initialPosition = CameraPosition(
@@ -84,7 +85,6 @@ class _kmu_mapState extends State<kmu_map> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 50,
@@ -148,9 +148,18 @@ class _kmu_mapState extends State<kmu_map> {
             () async {
               final data = await Get.to(search_start_page());
               if (data is List) {
+                _loading_page = false;
                 road_data().reset_road();
                 input_data(data[1]);
                 await road_data().input_road(data[0], data[1]);
+                Timer(
+                  Duration(seconds: 1),
+                  () {
+                    setState(() {
+                      _loading_page = true;
+                    });
+                  },
+                );
               } else {}
             },
           );
@@ -201,18 +210,20 @@ class _kmu_mapState extends State<kmu_map> {
                   offset: 35,
                 ),
                 Container(
-                  child: _loading_page ? null : Container(
-                    width: 800,
-                    height: 800,
-                    color: Colors.black.withOpacity(0.3),
-                    child: Center(
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        child:  CircularProgressIndicator(strokeWidth: 12),
-                      ),
-                    ),
-                  ),
+                  child: _loading_page
+                      ? null
+                      : Container(
+                          width: 800,
+                          height: 800,
+                          color: Colors.black.withOpacity(0.3),
+                          child: Center(
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              child: CircularProgressIndicator(strokeWidth: 12),
+                            ),
+                          ),
+                        ),
                 ),
               ],
             ),
@@ -287,7 +298,10 @@ class _kmu_mapState extends State<kmu_map> {
                             Icons.list,
                             color: Colors.blue,
                           ),
-                          Text("메  뉴"),
+                          Text("메  뉴",
+                              style: TextStyle(
+                                fontSize: 12,
+                              )),
                         ],
                       ),
                     );
@@ -311,7 +325,10 @@ class _kmu_mapState extends State<kmu_map> {
                         _change_load ? Icons.man : Icons.accessible,
                         color: Colors.blue,
                       ),
-                      Text(_change_load ? " 일 반 " : "휠체어"),
+                      Text(_change_load ? " 일 반 " : "휠체어",
+                          style: TextStyle(
+                            fontSize: 12,
+                          )),
                     ],
                   ),
                 ),
@@ -336,7 +353,12 @@ class _kmu_mapState extends State<kmu_map> {
                         Icons.search,
                         color: Colors.blue,
                       ),
-                      Text("건물 검색"),
+                      Text(
+                        "건물 검색",
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -362,8 +384,14 @@ class _kmu_mapState extends State<kmu_map> {
                             : Colors.blue,
                       ),
                       user_data().get_login_check()
-                          ? Text("로그아웃")
-                          : Text("로그인"),
+                          ? Text("로그아웃",
+                              style: TextStyle(
+                                fontSize: 12,
+                              ))
+                          : Text("로그인",
+                              style: TextStyle(
+                                fontSize: 12,
+                              )),
                     ],
                   ),
                 ),

@@ -1,0 +1,206 @@
+import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+
+
+String station_name1 = "";
+String station_arrtime1 = "";
+String station_name2 = "";
+String station_arrtime2 = "";
+String station_name3 = "";
+String station_arrtime3 = "";
+String station_name4 = "";
+String station_arrtime4 = "";
+String station_arrtime1_2 = "";
+String station_arrtime1_3 = "";
+String station_arrtime1_4 = "";
+String station_arrtime2_2 = "";
+String station_arrtime2_3 = "";
+String station_arrtime2_4 = "";
+String station_arrtime3_2 = "";
+String station_arrtime3_3 = "";
+String station_arrtime3_4 = "";
+String station_arrtime4_2 = "";
+String station_arrtime4_3 = "";
+String station_arrtime4_4 = "";
+List<String> stringList = [];
+
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late Future<List<SubwayInfo>> futureSubwayInfo;
+  List<bool> expandedStates = [];
+  Dio _dio = Dio();
+  String _data = "Loading...";
+
+  @override
+  void initState() {
+    super.initState();
+    futureSubwayInfo = DataService().loadSubwayInfo();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    final url = "http://27.113.54.21:20143/api/subway-schedules"; // API URL 입력
+
+    try {
+      Response response = await _dio.get(url);
+      print('Response status: ${response.statusCode}');
+      print('Response data: ${response.data}');
+
+      setState(() {
+        _data = response.data.toString();
+
+        station_name1 = _data.substring(_data.indexOf("from 계명대 to 강창"), _data.indexOf("from 계명대 to 강창") + "from 계명대 to 강창".length);
+        station_arrtime1 = _data.substring(_data.indexOf("1AA")+3, _data.indexOf("1AA") + 14);
+        station_arrtime1_2 = _data.substring(_data.indexOf("2AA")+3, _data.indexOf("2AA") + 14);
+        station_arrtime1_3 = _data.substring(_data.indexOf("3AA")+3, _data.indexOf("3AA") + 14);
+        station_arrtime1_4 = _data.substring(_data.indexOf("4AA")+3, _data.indexOf("4AA") + 14);
+        station_name2 = _data.substring(_data.indexOf("from 강창 to 계명대"), _data.indexOf("from 강창 to 계명대") + "from 강창 to 계명대".length);
+        station_arrtime2 = _data.substring(_data.indexOf("1BB")+3, _data.indexOf("1BB") + 14);
+        station_arrtime2_2 = _data.substring(_data.indexOf("2BB")+3, _data.indexOf("2BB") + 14);
+        station_arrtime2_3 = _data.substring(_data.indexOf("3BB")+3, _data.indexOf("3BB") + 14);
+        station_arrtime2_4 = _data.substring(_data.indexOf("4BB")+3, _data.indexOf("4BB") + 14);
+        station_name3 = _data.substring(_data.indexOf("from 계명대 to 성서산업단지"), _data.indexOf("from 계명대 to 성서산업단지") + "from 계명대 to 성서산업단지".length);
+        station_arrtime3 = _data.substring(_data.indexOf("1CC")+3, _data.indexOf("1CC") + 14);
+        station_arrtime3_2 = _data.substring(_data.indexOf("2CC")+3, _data.indexOf("2CC") + 14);
+        station_arrtime3_3 = _data.substring(_data.indexOf("3CC")+3, _data.indexOf("3CC") + 14);
+        station_arrtime3_4 = _data.substring(_data.indexOf("4CC")+3, _data.indexOf("4CC") + 14);
+        station_name4 = _data.substring(_data.indexOf("from 강창 to 대실"), _data.indexOf("from 강창 to 대실") + "from 강창 to 대실".length);
+        station_arrtime4 = _data.substring(_data.indexOf("1DD")+3, _data.indexOf("1DD") + 14);
+        station_arrtime4_2 = _data.substring(_data.indexOf("2DD")+3, _data.indexOf("2DD") + 14);
+        station_arrtime4_3 = _data.substring(_data.indexOf("3DD")+3, _data.indexOf("3DD") + 14);
+        station_arrtime4_4= _data.substring(_data.indexOf("4DD")+3, _data.indexOf("4DD") + 14);
+
+        stringList = [
+          station_arrtime1_2, station_arrtime1_3, station_arrtime1_4,
+          station_arrtime2_2, station_arrtime2_3, station_arrtime2_4,
+          station_arrtime3_2, station_arrtime3_3, station_arrtime3_4,
+          station_arrtime4_2, station_arrtime4_3, station_arrtime4_4,
+        ];
+      });
+
+      // Future를 다시 할당하여 갱신된 데이터 반영
+      futureSubwayInfo = DataService().loadSubwayInfo();
+    } catch (e) {
+      setState(() {
+        _data = "Failed to load data: Unexpected error occurred";
+      });
+      print("General error: $e");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('지하철 정보'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: _fetchData,
+          ),
+        ],
+      ),
+      body: Center(
+        child: FutureBuilder<List<SubwayInfo>>(
+          future: futureSubwayInfo,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              List<SubwayInfo>? data = snapshot.data;
+              if (expandedStates.isEmpty) {
+                expandedStates = List<bool>.filled(data!.length, false);
+              }
+              return ListView.builder(
+                itemCount: data?.length,
+                itemBuilder: (context, index) {
+                  String arrivalTime = data![index].arrivalTime;
+                  return Card(
+                    margin: EdgeInsets.all(10.0),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          tileColor: Colors.grey[200],
+                          leading: Icon(Icons.train),
+                          title: Text('${data[index].station} (${data[index].line})'),
+                          subtitle: Text('도착 시간: ${data[index].arrivalTime}'),
+                          trailing: IconButton(
+                            icon: Icon(expandedStates[index] ? Icons.expand_less : Icons.expand_more),
+                            onPressed: () {
+                              setState(() {
+                                expandedStates[index] = !expandedStates[index];
+                              });
+                            },
+                          ),
+                        ),
+                        if (expandedStates[index])
+                          Column(
+                            children: [
+                              Card(
+                                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                                child: ListTile(
+                                  title: Text('두 번째 도착예정'),
+                                  subtitle: Text('도착시간 : ${stringList[index * 3]}'),
+                                ),
+                              ),
+                              Card(
+                                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                                child: ListTile(
+                                  title: Text('세 번째 도착예정'),
+                                  subtitle: Text('도착시간 : ${stringList[index * 3 + 1]}'),
+                                ),
+                              ),
+                              Card(
+                                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                                child: ListTile(
+                                  title: Text('네 번째 도착예정'),
+                                  subtitle: Text('도착시간 : ${stringList[index * 3 + 2]}'),
+                                ),
+                              ),
+                            ],
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            } else if (snapshot.hasError) {
+              return Text("${snapshot.error}");
+            }
+            return CircularProgressIndicator();
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class SubwayInfo {
+  final String station;
+  final String line;
+  final String arrivalTime;
+
+  SubwayInfo({required this.station, required this.line, required this.arrivalTime});
+
+  factory SubwayInfo.fromJson(Map<String, dynamic> json) {
+    return SubwayInfo(
+      station: json['station'],
+      line: json['line'],
+      arrivalTime: json['arrivalTime'],
+    );
+  }
+}
+
+class DataService {
+  Future<List<SubwayInfo>> loadSubwayInfo() async {
+    await Future.delayed(Duration(seconds: 2));
+    return [
+      SubwayInfo(station: "계명대->문양", line: '2', arrivalTime: station_arrtime1),
+      SubwayInfo(station: "강창->영남대", line: '2', arrivalTime: station_arrtime2),
+      SubwayInfo(station: "계명대->영남대", line: '2', arrivalTime: station_arrtime3),
+      SubwayInfo(station: "강창->문양", line: '2', arrivalTime: station_arrtime4),
+    ];
+  }
+}
